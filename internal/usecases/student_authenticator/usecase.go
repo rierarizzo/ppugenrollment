@@ -8,40 +8,50 @@ import (
 )
 
 type DefaultAuthenticator struct {
-	userRepository UserRepository
+	userRepo UserRepository
 }
 
-func New(userRepository UserRepository) *DefaultAuthenticator {
-	return &DefaultAuthenticator{userRepository: userRepository}
+func New(userRepo UserRepository) *DefaultAuthenticator {
+	return &DefaultAuthenticator{userRepo}
 }
 
 func (d DefaultAuthenticator) Register(student *domain.Student) *domain.AppError {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(student.User.Password), bcrypt.DefaultCost)
 	if err != nil {
+		slog.Error(err.Error())
 		return domain.NewAppError(err, domain.UnexpectedError)
 	}
 
 	student.User.Password = string(bytes)
 
-	return d.userRepository.InsertStudent(student)
+	appErr := d.userRepo.InsertStudent(student)
+	if appErr != nil {
+		slog.Error(err.Error())
+		return domain.NewAppError(appErr, domain.UnexpectedError)
+	}
+
+	return nil
 }
 
 func (d DefaultAuthenticator) Login(email, password string) (*domain.AuthenticatedUser, *domain.AppError) {
-	student, appErr := d.userRepository.GetStudentByEmail(email)
+	notAuthErr := domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+
+	student, appErr := d.userRepo.GetStudentByEmail(email)
 	if appErr != nil {
 		slog.Error(appErr.Error())
-		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+		return nil, notAuthErr
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(student.User.Password), []byte(password))
 	if err != nil {
-		slog.Error(appErr.Error())
-		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+		slog.Error(err.Error())
+		return nil, notAuthErr
 	}
 
 	token, appErr := security.CreateJWTToken(student.User)
 	if appErr != nil {
-		return nil, appErr
+		slog.Error(appErr.Error())
+		return nil, notAuthErr
 	}
 
 	authenticatedUser := &domain.AuthenticatedUser{
