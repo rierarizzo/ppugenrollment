@@ -11,7 +11,7 @@ import (
 
 const SecretKey = "SECRET_KEY"
 
-func CreateJWTToken(user domain.User) (string, *domain.AppError) {
+func CreateJWTToken(user domain.CommonUserFields) (string, *domain.AppError) {
 	secret := []byte(os.Getenv(SecretKey))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &UserClaims{

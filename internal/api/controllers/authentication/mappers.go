@@ -6,7 +6,7 @@ import (
 
 func fromRequestToStudent(request *StudentRequest) domain.Student {
 	return domain.Student{
-		User: domain.User{
+		UserFields: domain.CommonUserFields{
 			IDCardNumber: request.IDCardNumber,
 			Name:         request.Name,
 			Surname:      request.Surname,
@@ -18,4 +18,28 @@ func fromRequestToStudent(request *StudentRequest) domain.Student {
 		IsAGraduate: request.IsAGraduate,
 		Level:       request.Level,
 	}
+}
+
+func fromRequestToAdmin(request *AdminRequest) domain.Admin {
+	return domain.Admin{
+		UserFields: domain.CommonUserFields{
+			IDCardNumber: request.IDCardNumber,
+			Name:         request.Name,
+			Surname:      request.Surname,
+			Email:        request.Email,
+			Password:     request.Password,
+			Role:         request.Role,
+		}}
+}
+
+func fromRequestToApprover(request *ApproverRequest) domain.Approver {
+	return domain.Approver{
+		UserFields: domain.CommonUserFields{
+			IDCardNumber: request.IDCardNumber,
+			Name:         request.Name,
+			Surname:      request.Surname,
+			Email:        request.Email,
+			Password:     request.Password,
+			Role:         request.Role,
+		}}
 }

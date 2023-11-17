@@ -3,14 +3,16 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 	"ppugenrollment/internal/api/controllers/authentication"
-	"ppugenrollment/internal/usecases/student_authenticator"
+	"ppugenrollment/internal/usecases/authenticator"
 )
 
-func Router(studentAuthenticator student_authenticator.Authenticator) *echo.Echo {
+func Router(studentAuthenticator authenticator.StudentAuthenticator,
+	adminAuthenticator authenticator.AdminAuthenticator,
+	approverAuthenticator authenticator.ApproverAuthenticator) *echo.Echo {
 	e := echo.New()
 
 	auth := e.Group("/auth")
-	authentication.Routes(auth)(studentAuthenticator)
+	authentication.Routes(auth)(studentAuthenticator, adminAuthenticator, approverAuthenticator)
 
 	return e
 }
