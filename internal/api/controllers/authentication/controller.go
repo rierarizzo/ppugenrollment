@@ -1,22 +1,27 @@
 package authentication
 
 import (
-	"github.com/labstack/echo/v4"
 	"ppugenrollment/internal/domain"
-	"ppugenrollment/internal/usecases/authenticator"
+	auth "ppugenrollment/internal/usecases/authenticator"
+
+	"github.com/labstack/echo/v4"
 )
 
-func Routes(g *echo.Group) func(studentAuthenticator authenticator.StudentAuthenticator,
-	adminAuthenticator authenticator.AdminAuthenticator, approverAuthenticator authenticator.ApproverAuthenticator) {
-	return func(studentAuth authenticator.StudentAuthenticator, adminAuth authenticator.AdminAuthenticator,
-		approverAuth authenticator.ApproverAuthenticator) {
+func Routes(g *echo.Group) func(
+	studentAuth auth.StudentAuthenticator, adminAuth auth.AdminAuthenticator, approverAuth auth.ApproverAuthenticator,
+) {
+	return func(
+		studentAuth auth.StudentAuthenticator,
+		adminAuth auth.AdminAuthenticator,
+		approverAuth auth.ApproverAuthenticator,
+	) {
 		g.POST("/student/register", registerStudent(studentAuth))
 		g.POST("/admin/register", registerAdmin(adminAuth))
 		g.POST("/approver/register", registerApprover(approverAuth))
 	}
 }
 
-func registerStudent(studentAuthenticator authenticator.StudentAuthenticator) echo.HandlerFunc {
+func registerStudent(studentAuthenticator auth.StudentAuthenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request StudentRequest
 		if err := c.Bind(&request); err != nil {
@@ -34,7 +39,7 @@ func registerStudent(studentAuthenticator authenticator.StudentAuthenticator) ec
 	}
 }
 
-func registerAdmin(adminAuthenticator authenticator.AdminAuthenticator) echo.HandlerFunc {
+func registerAdmin(adminAuthenticator auth.AdminAuthenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request AdminRequest
 		if err := c.Bind(&request); err != nil {
@@ -52,7 +57,7 @@ func registerAdmin(adminAuthenticator authenticator.AdminAuthenticator) echo.Han
 	}
 }
 
-func registerApprover(approverAuthenticator authenticator.ApproverAuthenticator) echo.HandlerFunc {
+func registerApprover(approverAuthenticator auth.ApproverAuthenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request ApproverRequest
 		if err := c.Bind(&request); err != nil {

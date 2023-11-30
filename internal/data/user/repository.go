@@ -3,8 +3,9 @@ package user
 import (
 	"database/sql"
 	"errors"
-	"github.com/jmoiron/sqlx"
 	"ppugenrollment/internal/domain"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type DefaultRepository struct {
@@ -18,23 +19,14 @@ func New(db *sqlx.DB) *DefaultRepository {
 func (r *DefaultRepository) InsertStudent(student *domain.Student) *domain.AppError {
 	model := fromStudentToStudentModel(student)
 
-	insertInUserSchema := `
-		INSERT INTO sys_user (id_card_number, name, surname, email, password, role) 
-		VALUES (?,?,?,?,?,?)
-	`
-	result, err := r.db.Exec(insertInUserSchema, model.IDCardNumber, model.Name, model.Surname, model.Email,
-		model.Password, model.Role)
-	if err != nil {
-		return domain.NewAppError(err, domain.RepositoryError)
-	}
-
-	lastInsertID, _ := result.LastInsertId()
+	lastInsertID, _ := r.insertUserAndGetLastID(
+		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
 
 	insertInStudentSchema := `
 		INSERT INTO student (sys_user, date_of_birth, is_a_graduate, level)
 		VALUES (?,?,?,?)
 	`
-	_, err = r.db.Exec(insertInStudentSchema, lastInsertID, model.DateOfBirth, model.IsAGraduate, model.Level)
+	_, err := r.db.Exec(insertInStudentSchema, lastInsertID, model.DateOfBirth, model.IsAGraduate, model.Level)
 	if err != nil {
 		return domain.NewAppError(err, domain.RepositoryError)
 	}
@@ -45,22 +37,13 @@ func (r *DefaultRepository) InsertStudent(student *domain.Student) *domain.AppEr
 func (r *DefaultRepository) InsertAdmin(admin *domain.Admin) *domain.AppError {
 	model := fromAdminToAdminModel(admin)
 
-	insertInUserSchema := `
-		INSERT INTO sys_user (id_card_number, name, surname, email, password, role) 
-		VALUES (?,?,?,?,?,?)
-	`
-	result, err := r.db.Exec(insertInUserSchema, model.IDCardNumber, model.Name, model.Surname, model.Email,
-		model.Password, model.Role)
-	if err != nil {
-		return domain.NewAppError(err, domain.RepositoryError)
-	}
-
-	lastInsertID, _ := result.LastInsertId()
+	lastInsertID, _ := r.insertUserAndGetLastID(
+		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
 
 	insertInStudentSchema := `
 		INSERT INTO admin (sys_user) VALUES (?)
 	`
-	_, err = r.db.Exec(insertInStudentSchema, lastInsertID)
+	_, err := r.db.Exec(insertInStudentSchema, lastInsertID)
 	if err != nil {
 		return domain.NewAppError(err, domain.RepositoryError)
 	}
@@ -71,27 +54,35 @@ func (r *DefaultRepository) InsertAdmin(admin *domain.Admin) *domain.AppError {
 func (r *DefaultRepository) InsertApprover(approver *domain.Approver) *domain.AppError {
 	model := fromApproverToApproverModel(approver)
 
-	insertInUserSchema := `
-		INSERT INTO sys_user (id_card_number, name, surname, email, password, role) 
-		VALUES (?,?,?,?,?,?)
-	`
-	result, err := r.db.Exec(insertInUserSchema, model.IDCardNumber, model.Name, model.Surname, model.Email,
-		model.Password, model.Role)
-	if err != nil {
-		return domain.NewAppError(err, domain.RepositoryError)
-	}
-
-	lastInsertID, _ := result.LastInsertId()
+	lastInsertID, _ := r.insertUserAndGetLastID(
+		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
 
 	insertInStudentSchema := `
 		INSERT INTO approver (sys_user) VALUES (?)
 	`
-	_, err = r.db.Exec(insertInStudentSchema, lastInsertID)
+	_, err := r.db.Exec(insertInStudentSchema, lastInsertID)
 	if err != nil {
 		return domain.NewAppError(err, domain.RepositoryError)
 	}
 
 	return nil
+}
+
+func (r *DefaultRepository) insertUserAndGetLastID(idCardNumber, name, surname, email, password, role string) (
+	int,
+	*domain.AppError) {
+	insertInUserSchema := `
+		INSERT INTO sys_user (id_card_number, name, surname, email, password, role) 
+		VALUES (?,?,?,?,?,?)
+	`
+	result, err := r.db.Exec(insertInUserSchema, idCardNumber, name, surname, email, password, role)
+	if err != nil {
+		return 0, domain.NewAppError(err, domain.RepositoryError)
+	}
+
+	lastInsertID, _ := result.LastInsertId()
+
+	return int(lastInsertID), nil
 }
 
 func (r *DefaultRepository) SelectUserByEmail(email string) (*domain.CommonUserFields, *domain.AppError) {
