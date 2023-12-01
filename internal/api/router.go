@@ -6,13 +6,11 @@ import (
 	"ppugenrollment/internal/usecases/authenticator"
 )
 
-func Router(studentAuthenticator authenticator.StudentAuthenticator,
-	adminAuthenticator authenticator.AdminAuthenticator,
-	approverAuthenticator authenticator.ApproverAuthenticator) *echo.Echo {
+func Router(userAuth authenticator.UserAuthenticator) *echo.Echo {
 	e := echo.New()
 
 	auth := e.Group("/auth")
-	authentication.Routes(auth)(studentAuthenticator, adminAuthenticator, approverAuthenticator)
+	authentication.Routes(auth)(userAuth)
 
 	return e
 }

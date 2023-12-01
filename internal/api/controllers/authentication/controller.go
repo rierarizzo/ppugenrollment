@@ -1,76 +1,64 @@
 package authentication
 
 import (
+	"net/http"
 	"ppugenrollment/internal/domain"
 	auth "ppugenrollment/internal/usecases/authenticator"
 
 	"github.com/labstack/echo/v4"
 )
 
-func Routes(g *echo.Group) func(
-	studentAuth auth.StudentAuthenticator, adminAuth auth.AdminAuthenticator, approverAuth auth.ApproverAuthenticator,
-) {
-	return func(
-		studentAuth auth.StudentAuthenticator,
-		adminAuth auth.AdminAuthenticator,
-		approverAuth auth.ApproverAuthenticator,
-	) {
-		g.POST("/student/register", registerStudent(studentAuth))
-		g.POST("/admin/register", registerAdmin(adminAuth))
-		g.POST("/approver/register", registerApprover(approverAuth))
+func Routes(g *echo.Group) func(userAuth auth.UserAuthenticator) {
+	return func(userAuth auth.UserAuthenticator) {
+		g.POST("/register", register(userAuth))
+		g.POST("/login", login(userAuth))
 	}
 }
 
-func registerStudent(studentAuthenticator auth.StudentAuthenticator) echo.HandlerFunc {
+func register(userAuth auth.UserAuthenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var request StudentRequest
+		var request UserRequest
 		if err := c.Bind(&request); err != nil {
 			return domain.NewAppError(err, domain.BadRequestError)
 		}
 
-		student := fromRequestToStudent(&request)
+		var authenticatorErr *domain.AppError
+		switch request.Role {
+		case "S": // Student
+			student := fromRequestToStudent(&request)
+			authenticatorErr = userAuth.Register(&student)
+			break
+		case "A": // Approver
+			approver := fromRequestToApprover(&request)
+			authenticatorErr = userAuth.Register(&approver)
+			break
+		case "M": // Admin
+			admin := fromRequestToAdmin(&request)
+			authenticatorErr = userAuth.Register(&admin)
+		default:
+			return domain.NewAppErrorWithType(domain.BadRequestError)
+		}
 
-		appErr := studentAuthenticator.Register(&student)
-		if appErr != nil {
-			return domain.NewAppError(appErr, domain.UnexpectedError)
+		if authenticatorErr != nil {
+			return domain.NewAppError(authenticatorErr, domain.UnexpectedError)
 		}
 
 		return nil
 	}
 }
 
-func registerAdmin(adminAuthenticator auth.AdminAuthenticator) echo.HandlerFunc {
+func login(userAuth auth.UserAuthenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var request AdminRequest
+		var request UserRequest
 		if err := c.Bind(&request); err != nil {
 			return domain.NewAppError(err, domain.BadRequestError)
 		}
 
-		admin := fromRequestToAdmin(&request)
-
-		appErr := adminAuthenticator.Register(&admin)
+		authPayload, appErr := userAuth.Login(request.Email, request.Password)
 		if appErr != nil {
 			return domain.NewAppError(appErr, domain.UnexpectedError)
 		}
 
-		return nil
-	}
-}
-
-func registerApprover(approverAuthenticator auth.ApproverAuthenticator) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var request ApproverRequest
-		if err := c.Bind(&request); err != nil {
-			return domain.NewAppError(err, domain.BadRequestError)
-		}
-
-		approver := fromRequestToApprover(&request)
-
-		appErr := approverAuthenticator.Register(&approver)
-		if appErr != nil {
-			return domain.NewAppError(appErr, domain.UnexpectedError)
-		}
-
-		return nil
+		return c.JSON(http.StatusAccepted, fromAuthPayloadToResponse(authPayload))
 	}
 }

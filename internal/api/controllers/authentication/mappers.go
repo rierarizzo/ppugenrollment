@@ -4,9 +4,9 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
-func fromRequestToStudent(request *StudentRequest) domain.Student {
+func fromRequestToStudent(request *UserRequest) domain.Student {
 	return domain.Student{
-		UserFields: domain.CommonUserFields{
+		User: domain.User{
 			IDCardNumber: request.IDCardNumber,
 			Name:         request.Name,
 			Surname:      request.Surname,
@@ -20,9 +20,9 @@ func fromRequestToStudent(request *StudentRequest) domain.Student {
 	}
 }
 
-func fromRequestToAdmin(request *AdminRequest) domain.Admin {
+func fromRequestToAdmin(request *UserRequest) domain.Admin {
 	return domain.Admin{
-		UserFields: domain.CommonUserFields{
+		User: domain.User{
 			IDCardNumber: request.IDCardNumber,
 			Name:         request.Name,
 			Surname:      request.Surname,
@@ -32,9 +32,9 @@ func fromRequestToAdmin(request *AdminRequest) domain.Admin {
 		}}
 }
 
-func fromRequestToApprover(request *ApproverRequest) domain.Approver {
+func fromRequestToApprover(request *UserRequest) domain.Approver {
 	return domain.Approver{
-		UserFields: domain.CommonUserFields{
+		User: domain.User{
 			IDCardNumber: request.IDCardNumber,
 			Name:         request.Name,
 			Surname:      request.Surname,
@@ -42,4 +42,19 @@ func fromRequestToApprover(request *ApproverRequest) domain.Approver {
 			Password:     request.Password,
 			Role:         request.Role,
 		}}
+}
+
+func fromAuthPayloadToResponse(payload *domain.AuthUserPayload) UserResponse {
+	return UserResponse{
+		ID:      payload.ID,
+		Name:    payload.Name,
+		Surname: payload.Surname,
+		Email:   payload.Email,
+		Role:    payload.Role,
+		AuthenticationResult: struct {
+			AccessToken string `json:"access_token"`
+		}(struct{ AccessToken string }{
+			AccessToken: payload.AccessToken,
+		}),
+	}
 }

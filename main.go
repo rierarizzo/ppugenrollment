@@ -13,11 +13,9 @@ func main() {
 	dbConn := data.ConnectToMySQL(dsn)
 
 	userRepo := user.New(dbConn)
-	studentAuthenticator := *authenticator.NewStudentAuthenticator(userRepo)
-	adminAuthenticator := *authenticator.NewAdminAuthenticator(userRepo)
-	approverAuthenticator := *authenticator.NewApproverAuthenticator(userRepo)
+	userAuth := *authenticator.NewUserAuthenticator(userRepo)
 
-	router := api.Router(studentAuthenticator, adminAuthenticator, approverAuthenticator)
+	router := api.Router(userAuth)
 
 	router.Logger.Fatal(router.Start(fmt.Sprintf(":%s", "8080")))
 }

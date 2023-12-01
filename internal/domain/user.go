@@ -2,12 +2,11 @@ package domain
 
 import "time"
 
-type User interface {
-	GetEmail() string
-	GetPassword() string
+type UserRegistrable interface {
+	GetUser() *User
 }
 
-type CommonUserFields struct {
+type User struct {
 	ID           int
 	IDCardNumber string
 	Name         string
@@ -18,45 +17,33 @@ type CommonUserFields struct {
 }
 
 type Student struct {
-	UserFields  CommonUserFields
+	User
 	DateOfBirth time.Time
 	IsAGraduate bool
 	Level       int
 }
 
-func (s *Student) GetEmail() string {
-	return s.UserFields.Email
-}
-
-func (s *Student) GetPassword() string {
-	return s.UserFields.Password
+func (s *Student) GetUser() *User {
+	return &s.User
 }
 
 type Approver struct {
-	UserFields CommonUserFields
+	User
 }
 
-func (a *Approver) GetEmail() string {
-	return a.UserFields.Email
-}
-
-func (a *Approver) GetPassword() string {
-	return a.UserFields.Password
+func (a *Approver) GetUser() *User {
+	return &a.User
 }
 
 type Admin struct {
-	UserFields CommonUserFields
+	User
 }
 
-func (a *Admin) GetEmail() string {
-	return a.UserFields.Email
-}
-
-func (a *Admin) GetPassword() string {
-	return a.UserFields.Password
+func (a *Admin) GetUser() *User {
+	return &a.User
 }
 
 type AuthUserPayload struct {
-	UserFields  CommonUserFields
+	User
 	AccessToken string
 }

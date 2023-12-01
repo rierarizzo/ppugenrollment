@@ -85,7 +85,7 @@ func (r *DefaultRepository) insertUserAndGetLastID(idCardNumber, name, surname, 
 	return int(lastInsertID), nil
 }
 
-func (r *DefaultRepository) SelectUserByEmail(email string) (*domain.CommonUserFields, *domain.AppError) {
+func (r *DefaultRepository) SelectUserByEmail(email string) (*domain.User, *domain.AppError) {
 	model := CommonFieldsModel{}
 
 	selectInUserSchema := `

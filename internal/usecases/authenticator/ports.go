@@ -14,5 +14,5 @@ type UserRepository interface {
 	InsertAdmin(admin *domain.Admin) *domain.AppError
 	InsertApprover(approver *domain.Approver) *domain.AppError
 
-	SelectUserByEmail(email string) (*domain.CommonUserFields, *domain.AppError)
+	SelectUserByEmail(email string) (*domain.User, *domain.AppError)
 }
