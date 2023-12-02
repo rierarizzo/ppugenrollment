@@ -10,25 +10,10 @@ type UserRequest struct {
 	Surname      string    `json:"surname,omitempty"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
-	Role         string    `json:"role"`
+	Role         string    `json:"role,omitempty"`
 	DateOfBirth  time.Time `json:"date_of_birth,omitempty"`
 	IsAGraduate  bool      `json:"is_a_graduate,omitempty"`
 	Level        int       `json:"level,omitempty"`
-}
-
-type StudentRequest struct {
-	UserRequest
-	DateOfBirth time.Time `json:"date_of_birth"`
-	IsAGraduate bool      `json:"is_a_graduate"`
-	Level       int       `json:"level"`
-}
-
-type AdminRequest struct {
-	UserRequest
-}
-
-type ApproverRequest struct {
-	UserRequest
 }
 
 // Responses

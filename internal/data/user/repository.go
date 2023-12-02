@@ -13,7 +13,7 @@ type DefaultRepository struct {
 }
 
 func New(db *sqlx.DB) *DefaultRepository {
-	return &DefaultRepository{db: db}
+	return &DefaultRepository{db}
 }
 
 func (r *DefaultRepository) InsertStudent(student *domain.Student) *domain.AppError {
@@ -86,12 +86,12 @@ func (r *DefaultRepository) insertUserAndGetLastID(idCardNumber, name, surname, 
 }
 
 func (r *DefaultRepository) SelectUserByEmail(email string) (*domain.User, *domain.AppError) {
-	model := CommonFieldsModel{}
+	var model Model
 
 	selectInUserSchema := `
 		SELECT * FROM sys_user WHERE email=?
 	`
-	err := r.db.Select(&model, selectInUserSchema, email)
+	err := r.db.Get(&model, selectInUserSchema, email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.NewAppError(err, domain.NotFoundError)

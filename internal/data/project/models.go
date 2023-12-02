@@ -1,8 +1,8 @@
 package project
 
 type Model struct {
-	ID          int    `sql:"id"`
-	Company     int    `sql:"company"`
-	Description string `sql:"description"`
-	Schedule    string `sql:"schedule"`
+	ID          int    `db:"id"`
+	Company     int    `db:"company"`
+	Description string `db:"description"`
+	Schedule    string `db:"schedule"`
 }

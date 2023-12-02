@@ -1,4 +1,4 @@
-package project_management
+package project_manager
 
 import (
 	"log/slog"

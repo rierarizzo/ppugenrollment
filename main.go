@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"ppugenrollment/internal/api"
 	"ppugenrollment/internal/data"
+	"ppugenrollment/internal/data/project"
 	"ppugenrollment/internal/data/user"
 	"ppugenrollment/internal/usecases/authenticator"
+	"ppugenrollment/internal/usecases/project_manager"
 )
 
 func main() {
@@ -13,9 +15,12 @@ func main() {
 	dbConn := data.ConnectToMySQL(dsn)
 
 	userRepo := user.New(dbConn)
-	userAuth := *authenticator.NewUserAuthenticator(userRepo)
+	userAuth := *authenticator.New(userRepo)
 
-	router := api.Router(userAuth)
+	projectRepo := project.New(dbConn)
+	projectMngr := *project_manager.New(projectRepo)
+
+	router := api.Router(userAuth, projectMngr)
 
 	router.Logger.Fatal(router.Start(fmt.Sprintf(":%s", "8080")))
 }

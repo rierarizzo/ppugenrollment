@@ -5,7 +5,7 @@ import (
 )
 
 type Authenticator interface {
-	Register(user domain.User) *domain.AppError
+	Register(userRegistrable domain.UserRegistrable) *domain.AppError
 	Login(email, password string) (*domain.AuthUserPayload, *domain.AppError)
 }
 

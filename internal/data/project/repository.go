@@ -13,7 +13,7 @@ func New(db *sqlx.DB) *DefaultRepository {
 	return &DefaultRepository{db}
 }
 
-func (d DefaultRepository) SelectAllProjects() ([]domain.Project, *domain.AppError) {
+func (d *DefaultRepository) SelectAllProjects() ([]domain.Project, *domain.AppError) {
 	var projectsModel []Model
 
 	selectAllInProjectSchema := `
@@ -24,11 +24,12 @@ func (d DefaultRepository) SelectAllProjects() ([]domain.Project, *domain.AppErr
 		return nil, domain.NewAppError(err, domain.RepositoryError)
 	}
 
-	if len(projectsModel) <= 0 {
-		return nil, domain.NewAppErrorWithType(domain.NotFoundError)
+	var projects []domain.Project
+
+	if len(projectsModel) == 0 {
+		return projects, nil
 	}
 
-	var projects []domain.Project
 	for _, v := range projectsModel {
 		projects = append(projects, fromModelToProject(&v))
 	}

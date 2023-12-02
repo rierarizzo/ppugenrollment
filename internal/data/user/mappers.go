@@ -6,7 +6,7 @@ import (
 
 func fromStudentToStudentModel(student *domain.Student) StudentModel {
 	return StudentModel{
-		CommonFieldsModel: CommonFieldsModel{
+		Model: Model{
 			ID:           student.User.ID,
 			IDCardNumber: student.User.IDCardNumber,
 			Name:         student.User.Name,
@@ -23,7 +23,7 @@ func fromStudentToStudentModel(student *domain.Student) StudentModel {
 
 func fromAdminToAdminModel(admin *domain.Admin) AdminModel {
 	return AdminModel{
-		CommonFieldsModel{
+		Model{
 			ID:           admin.User.ID,
 			IDCardNumber: admin.User.IDCardNumber,
 			Name:         admin.User.Name,
@@ -36,7 +36,7 @@ func fromAdminToAdminModel(admin *domain.Admin) AdminModel {
 
 func fromApproverToApproverModel(approver *domain.Approver) ApproverModel {
 	return ApproverModel{
-		CommonFieldsModel{
+		Model{
 			ID:           approver.User.ID,
 			IDCardNumber: approver.User.IDCardNumber,
 			Name:         approver.User.Name,
@@ -47,7 +47,7 @@ func fromApproverToApproverModel(approver *domain.Approver) ApproverModel {
 		}}
 }
 
-func fromCommonFieldsModelToUser(fields *CommonFieldsModel) domain.User {
+func fromCommonFieldsModelToUser(fields *Model) domain.User {
 	return domain.User{
 		ID:           fields.ID,
 		IDCardNumber: fields.IDCardNumber,

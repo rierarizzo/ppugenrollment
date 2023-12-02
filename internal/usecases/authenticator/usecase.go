@@ -11,7 +11,7 @@ type UserAuthenticator struct {
 	userRepo UserRepository
 }
 
-func NewUserAuthenticator(userRepo UserRepository) *UserAuthenticator {
+func New(userRepo UserRepository) *UserAuthenticator {
 	return &UserAuthenticator{userRepo}
 }
 
