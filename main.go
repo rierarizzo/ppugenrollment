@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"ppugenrollment/internal/api"
 	"ppugenrollment/internal/data"
+	"ppugenrollment/internal/data/enrollment"
 	"ppugenrollment/internal/data/project"
 	"ppugenrollment/internal/data/user"
 	"ppugenrollment/internal/usecases/authenticator"
+	"ppugenrollment/internal/usecases/project_enroller"
 	"ppugenrollment/internal/usecases/project_manager"
 )
 
@@ -20,7 +22,10 @@ func main() {
 	projectRepo := project.New(dbConn)
 	projectMngr := *project_manager.New(projectRepo)
 
-	router := api.Router(userAuth, projectMngr)
+	enrollmentRepo := enrollment.New(dbConn)
+	projectEnroller := *project_enroller.New(enrollmentRepo)
+
+	router := api.Router(userAuth, projectMngr, projectEnroller)
 
 	router.Logger.Fatal(router.Start(fmt.Sprintf(":%s", "8080")))
 }
