@@ -19,8 +19,16 @@ func New(db *sqlx.DB) *DefaultRepository {
 func (r *DefaultRepository) InsertStudent(student *domain.Student) *domain.AppError {
 	model := fromStudentToStudentModel(student)
 
-	lastInsertID, _ := r.insertUserAndGetLastID(
-		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
+	user := Model{
+		IDCardNumber: model.IDCardNumber,
+		Name:         model.Name,
+		Surname:      model.Surname,
+		Email:        model.Email,
+		Password:     model.Password,
+		Role:         model.Role,
+	}
+
+	lastInsertID, _ := r.insertUserAndGetLastID(&user)
 
 	insertInStudentSchema := `
 		INSERT INTO student (sys_user, date_of_birth, is_a_graduate, level)
@@ -37,8 +45,16 @@ func (r *DefaultRepository) InsertStudent(student *domain.Student) *domain.AppEr
 func (r *DefaultRepository) InsertAdmin(admin *domain.Admin) *domain.AppError {
 	model := fromAdminToAdminModel(admin)
 
-	lastInsertID, _ := r.insertUserAndGetLastID(
-		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
+	user := Model{
+		IDCardNumber: model.IDCardNumber,
+		Name:         model.Name,
+		Surname:      model.Surname,
+		Email:        model.Email,
+		Password:     model.Password,
+		Role:         model.Role,
+	}
+
+	lastInsertID, _ := r.insertUserAndGetLastID(&user)
 
 	insertInStudentSchema := `
 		INSERT INTO admin (sys_user) VALUES (?)
@@ -54,8 +70,16 @@ func (r *DefaultRepository) InsertAdmin(admin *domain.Admin) *domain.AppError {
 func (r *DefaultRepository) InsertApprover(approver *domain.Approver) *domain.AppError {
 	model := fromApproverToApproverModel(approver)
 
-	lastInsertID, _ := r.insertUserAndGetLastID(
-		model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password, model.Role)
+	user := Model{
+		IDCardNumber: model.IDCardNumber,
+		Name:         model.Name,
+		Surname:      model.Surname,
+		Email:        model.Email,
+		Password:     model.Password,
+		Role:         model.Role,
+	}
+
+	lastInsertID, _ := r.insertUserAndGetLastID(&user)
 
 	insertInStudentSchema := `
 		INSERT INTO approver (sys_user) VALUES (?)
@@ -68,14 +92,14 @@ func (r *DefaultRepository) InsertApprover(approver *domain.Approver) *domain.Ap
 	return nil
 }
 
-func (r *DefaultRepository) insertUserAndGetLastID(idCardNumber, name, surname, email, password, role string) (
-	int,
-	*domain.AppError) {
+func (r *DefaultRepository) insertUserAndGetLastID(user *Model) (
+	int, *domain.AppError) {
 	insertInUserSchema := `
 		INSERT INTO sys_user (id_card_number, name, surname, email, password, role) 
 		VALUES (?,?,?,?,?,?)
 	`
-	result, err := r.db.Exec(insertInUserSchema, idCardNumber, name, surname, email, password, role)
+	result, err := r.db.Exec(
+		insertInUserSchema, user.IDCardNumber, user.Name, user.Surname, user.Email, user.Password, user.Role)
 	if err != nil {
 		return 0, domain.NewAppError(err, domain.RepositoryError)
 	}
