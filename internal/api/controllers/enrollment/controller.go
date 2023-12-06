@@ -9,11 +9,11 @@ import (
 
 func Routes(g *echo.Group) func(enroller project_enroller.ProjectEnroller) {
 	return func(enroller project_enroller.ProjectEnroller) {
-		g.POST("/apply", apply(enroller))
+		g.POST("/enroll-to-project", enrollToProject(enroller))
 	}
 }
 
-func apply(enroller project_enroller.ProjectEnroller) echo.HandlerFunc {
+func enrollToProject(enroller project_enroller.ProjectEnroller) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request ApplicationRequest
 		if err := c.Bind(&request); err != nil {

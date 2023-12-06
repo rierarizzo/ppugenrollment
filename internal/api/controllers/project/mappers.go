@@ -5,9 +5,11 @@ import "ppugenrollment/internal/domain"
 func fromProjectToResponse(project *domain.Project) Response {
 	return Response{
 		ID:          project.ID,
-		Company:     project.Company,
+		Company:     project.Company.ID,
 		Description: project.Description,
 		Schedule:    project.Schedule,
+		Starts:      project.Starts,
+		Ends:        project.Ends,
 	}
 }
 

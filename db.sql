@@ -30,7 +30,7 @@ create table sys_user
 
 create table student
 (
-    sys_user          int not null,
+    sys_user      int not null,
     date_of_birth date,
     is_a_graduate boolean,
     level         int,
@@ -72,10 +72,12 @@ create table company
 
 create table project
 (
-    id          int  not null auto_increment,
-    company     int  not null,
-    description text not null,
-    schedule    char not null,
+    id          int      not null auto_increment,
+    company     int      not null,
+    description text     not null,
+    schedule    char     not null,
+    starts      datetime not null,
+    ends        datetime not null,
     primary key (id),
     foreign key (company) references company (id),
     foreign key (schedule) references schedule (code)
@@ -93,10 +95,12 @@ create table project_schedule
 
 create table enrollment_application
 (
-    id       int not null auto_increment,
-    student  int not null,
-    project  int not null,
-    schedule int not null,
+    id         int  not null auto_increment,
+    student    int  not null,
+    project    int  not null,
+    schedule   int  not null,
+    applied_on datetime      default now(),
+    status     char not null default 'P', # P: Pendiente, A: Approved
     primary key (id),
     foreign key (student) references student (sys_user),
     foreign key (project) references project (id),

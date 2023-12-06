@@ -1,8 +1,11 @@
 package domain
 
+import "time"
+
 type EnrollmentApplication struct {
-	ID       int
-	Student  int
-	Project  int
-	Schedule int
+	ID        int
+	Student   Student
+	Project   Project
+	Schedule  int
+	AppliedOn time.Time
 }

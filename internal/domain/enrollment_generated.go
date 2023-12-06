@@ -3,8 +3,9 @@ package domain
 import "time"
 
 type EnrollmentGenerated struct {
-	ID                  int
-	EnrollmentGenerated int
-	ApprovedBy          int
-	GeneratedAt         time.Time
+	ID                    int
+	EnrollmentApplication int
+	Project               Project
+	ApprovedBy            Approver
+	GeneratedAt           time.Time
 }

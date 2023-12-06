@@ -1,8 +1,12 @@
 package domain
 
+import "time"
+
 type Project struct {
 	ID          int
-	Company     int
+	Company     Company
 	Description string
 	Schedule    string
+	Starts      time.Time
+	Ends        time.Time
 }
