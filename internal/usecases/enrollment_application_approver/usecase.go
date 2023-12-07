@@ -1,4 +1,4 @@
-package project_approver
+package enrollment_application_approver
 
 import (
 	"ppugenrollment/internal/domain"

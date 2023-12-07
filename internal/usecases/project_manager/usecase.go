@@ -6,10 +6,10 @@ import (
 )
 
 type DefaultManager struct {
-	projectRepo Repository
+	projectRepo ProjectRepository
 }
 
-func New(projectRepo Repository) *DefaultManager {
+func New(projectRepo ProjectRepository) *DefaultManager {
 	return &DefaultManager{projectRepo}
 }
 

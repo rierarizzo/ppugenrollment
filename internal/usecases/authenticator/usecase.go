@@ -7,15 +7,15 @@ import (
 	"ppugenrollment/internal/security"
 )
 
-type UserAuthenticator struct {
+type DefaultAuthenticator struct {
 	userRepo UserRepository
 }
 
-func New(userRepo UserRepository) *UserAuthenticator {
-	return &UserAuthenticator{userRepo}
+func New(userRepo UserRepository) *DefaultAuthenticator {
+	return &DefaultAuthenticator{userRepo}
 }
 
-func (a *UserAuthenticator) Register(userRegistrable domain.UserRegistrable) *domain.AppError {
+func (a *DefaultAuthenticator) Register(userRegistrable domain.UserRegistrable) *domain.AppError {
 	user := userRegistrable.GetUser()
 
 	appErr := a.cryptUserPassword(user)
@@ -36,7 +36,7 @@ func (a *UserAuthenticator) Register(userRegistrable domain.UserRegistrable) *do
 	}
 }
 
-func (a *UserAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
+func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
 	user, appErr := a.userRepo.SelectUserByEmail(email)
 	if appErr != nil {
 		slog.Error(appErr.Error())
@@ -63,7 +63,7 @@ func (a *UserAuthenticator) Login(email, password string) (*domain.AuthUserPaylo
 	return payload, nil
 }
 
-func (a *UserAuthenticator) cryptUserPassword(user *domain.User) *domain.AppError {
+func (a *DefaultAuthenticator) cryptUserPassword(user *domain.User) *domain.AppError {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		slog.Error(err.Error())

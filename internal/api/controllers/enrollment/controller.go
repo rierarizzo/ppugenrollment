@@ -7,13 +7,13 @@ import (
 	"ppugenrollment/internal/usecases/project_enroller"
 )
 
-func Routes(g *echo.Group) func(enroller project_enroller.ProjectEnroller) {
-	return func(enroller project_enroller.ProjectEnroller) {
+func Routes(g *echo.Group) func(enroller project_enroller.Enroller) {
+	return func(enroller project_enroller.Enroller) {
 		g.POST("/enroll-to-project", enrollToProject(enroller))
 	}
 }
 
-func enrollToProject(enroller project_enroller.ProjectEnroller) echo.HandlerFunc {
+func enrollToProject(enroller project_enroller.Enroller) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request ApplicationRequest
 		if err := c.Bind(&request); err != nil {

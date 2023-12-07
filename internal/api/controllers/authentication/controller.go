@@ -8,14 +8,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Routes(g *echo.Group) func(userAuth auth.UserAuthenticator) {
-	return func(userAuth auth.UserAuthenticator) {
+func Routes(g *echo.Group) func(userAuth auth.Authenticator) {
+	return func(userAuth auth.Authenticator) {
 		g.POST("/register", register(userAuth))
 		g.POST("/login", login(userAuth))
 	}
 }
 
-func register(userAuth auth.UserAuthenticator) echo.HandlerFunc {
+func register(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {
@@ -47,7 +47,7 @@ func register(userAuth auth.UserAuthenticator) echo.HandlerFunc {
 	}
 }
 
-func login(userAuth auth.UserAuthenticator) echo.HandlerFunc {
+func login(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {

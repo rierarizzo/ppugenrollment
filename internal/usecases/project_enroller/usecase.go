@@ -2,15 +2,15 @@ package project_enroller
 
 import "ppugenrollment/internal/domain"
 
-type ProjectEnroller struct {
+type DefaultEnroller struct {
 	enrollmentRepo EnrollmentRepository
 }
 
-func New(enrollmentRepo EnrollmentRepository) *ProjectEnroller {
-	return &ProjectEnroller{enrollmentRepo}
+func New(enrollmentRepo EnrollmentRepository) *DefaultEnroller {
+	return &DefaultEnroller{enrollmentRepo}
 }
 
-func (p *ProjectEnroller) EnrollToProject(application *domain.EnrollmentApplication) (
+func (p *DefaultEnroller) EnrollToProject(application *domain.EnrollmentApplication) (
 	*domain.EnrollmentApplication,
 	*domain.AppError) {
 	defaultResponse := domain.EnrollmentApplication{

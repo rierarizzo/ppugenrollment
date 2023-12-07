@@ -6,6 +6,6 @@ type Manager interface {
 	GetAllProjects() ([]domain.Project, *domain.AppError)
 }
 
-type Repository interface {
+type ProjectRepository interface {
 	SelectAllProjects() ([]domain.Project, *domain.AppError)
 }
