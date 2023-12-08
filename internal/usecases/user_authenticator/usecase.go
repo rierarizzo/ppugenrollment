@@ -1,4 +1,4 @@
-package authenticator
+package user_authenticator
 
 import (
 	"golang.org/x/crypto/bcrypt"
@@ -23,17 +23,25 @@ func (a *DefaultAuthenticator) Register(userRegistrable domain.UserRegistrable) 
 		return appErr
 	}
 
+	var repositoryErr *domain.AppError
 	switch u := userRegistrable.(type) {
 	case *domain.Student:
-		return a.userRepo.InsertStudent(u)
+		repositoryErr = a.userRepo.InsertStudent(u)
 	case *domain.Approver:
-		return a.userRepo.InsertApprover(u)
+		repositoryErr = a.userRepo.InsertApprover(u)
 	case *domain.Admin:
-		return a.userRepo.InsertAdmin(u)
+		repositoryErr = a.userRepo.InsertAdmin(u)
 	default:
 		slog.Error("Error while determining user type")
+		repositoryErr = domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	if repositoryErr != nil {
+		slog.Error(repositoryErr.Error())
 		return domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
+
+	return nil
 }
 
 func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {

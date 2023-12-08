@@ -16,7 +16,6 @@ func fromModelToEnrollmentGenerated(model *EnrollmentGeneratedModel) domain.Enro
 				RUC:  model.Project.Company.RUC,
 			},
 			Description: model.Project.Description,
-			Schedule:    model.Project.Schedule,
 			Starts:      model.Project.Starts,
 			Ends:        model.Project.Ends,
 		},

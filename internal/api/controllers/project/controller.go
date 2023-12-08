@@ -8,7 +8,7 @@ import (
 
 func Routes(g *echo.Group) func(mngr project_manager.Manager) {
 	return func(mngr project_manager.Manager) {
-		g.POST("/get-all-projects", getAllProjects(mngr))
+		g.GET("/getAllProjects", getAllProjects(mngr))
 	}
 }
 
@@ -16,7 +16,7 @@ func getAllProjects(mngr project_manager.Manager) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		projects, appErr := mngr.GetAllProjects()
 		if appErr != nil {
-			return appErr
+			return c.JSON(http.StatusInternalServerError, appErr)
 		}
 
 		return c.JSON(http.StatusAccepted, fromProjectsToResponse(projects))

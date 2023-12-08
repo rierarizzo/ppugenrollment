@@ -75,12 +75,10 @@ create table project
     id          int      not null auto_increment,
     company     int      not null,
     description text     not null,
-    schedule    char     not null,
     starts      datetime not null,
     ends        datetime not null,
     primary key (id),
-    foreign key (company) references company (id),
-    foreign key (schedule) references schedule (code)
+    foreign key (company) references company (id)
 );
 
 create table project_schedule
@@ -116,3 +114,16 @@ create table enrollment_generated
     primary key (id),
     foreign key (approved_by) references approver (sys_user)
 );
+
+/* Default companies */
+insert into company (name, ruc, image_url)
+values ('Viamatica', '0928192031001', 'https://viamatica.com/wp-content/uploads/2021/05/Logo-Viamatica.png');
+
+
+/* Default projects */
+insert into project (company, description, starts, ends)
+values (1, 'Programar un sistema de adopción de mascotas', str_to_date('5,2,2024', '%d,%m,%Y'),
+        str_to_date('7,4,2024', '%d,%m,%Y'));
+
+insert into project_schedule (project, schedule) values (1, 'M');
+insert into project_schedule (project, schedule) values (1, 'E');

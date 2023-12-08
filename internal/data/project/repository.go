@@ -16,7 +16,7 @@ func New(db *sqlx.DB) *DefaultRepository {
 func (d *DefaultRepository) SelectAllProjects() ([]domain.Project, *domain.AppError) {
 	var projectsModel []Model
 
-	err := d.db.Select(projectsModel, "SELECT * FROM project")
+	err := d.db.Select(&projectsModel, "SELECT * FROM project")
 	if err != nil {
 		return nil, domain.NewAppError(err, domain.RepositoryError)
 	}

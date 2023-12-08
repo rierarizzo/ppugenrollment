@@ -8,10 +8,10 @@ import (
 	"ppugenrollment/internal/data/enrollment"
 	"ppugenrollment/internal/data/project"
 	"ppugenrollment/internal/data/user"
-	"ppugenrollment/internal/usecases/authenticator"
 	"ppugenrollment/internal/usecases/enrollment_application_approver"
 	"ppugenrollment/internal/usecases/project_enroller"
 	"ppugenrollment/internal/usecases/project_manager"
+	"ppugenrollment/internal/usecases/user_authenticator"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 	dbConn := data.ConnectToMySQL(dsn)
 
 	userRepo := user.New(dbConn)
-	userAuth := *authenticator.New(userRepo)
+	userAuth := *user_authenticator.New(userRepo)
 
 	projectRepo := project.New(dbConn)
 	projectMngr := *project_manager.New(projectRepo)

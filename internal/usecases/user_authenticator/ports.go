@@ -1,4 +1,4 @@
-package authenticator
+package user_authenticator
 
 import (
 	"ppugenrollment/internal/domain"

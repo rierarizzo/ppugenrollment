@@ -3,7 +3,7 @@ package authentication
 import (
 	"net/http"
 	"ppugenrollment/internal/domain"
-	auth "ppugenrollment/internal/usecases/authenticator"
+	auth "ppugenrollment/internal/usecases/user_authenticator"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,7 +19,7 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {
-			return domain.NewAppError(err, domain.BadRequestError)
+			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
 		var authenticatorErr *domain.AppError
@@ -36,14 +36,14 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 			admin := fromRequestToAdmin(&request)
 			authenticatorErr = userAuth.Register(&admin)
 		default:
-			return domain.NewAppErrorWithType(domain.BadRequestError)
+			return c.JSON(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		if authenticatorErr != nil {
-			return domain.NewAppError(authenticatorErr, domain.UnexpectedError)
+			return c.JSON(http.StatusInternalServerError, authenticatorErr)
 		}
 
-		return nil
+		return c.JSON(http.StatusAccepted, "OK")
 	}
 }
 
@@ -51,12 +51,12 @@ func login(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {
-			return domain.NewAppError(err, domain.BadRequestError)
+			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
 		authPayload, appErr := userAuth.Login(request.Email, request.Password)
 		if appErr != nil {
-			return domain.NewAppError(appErr, domain.UnexpectedError)
+			return c.JSON(http.StatusInternalServerError, appErr)
 		}
 
 		return c.JSON(http.StatusAccepted, fromAuthPayloadToResponse(authPayload))

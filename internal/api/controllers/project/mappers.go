@@ -7,7 +7,6 @@ func fromProjectToResponse(project *domain.Project) Response {
 		ID:          project.ID,
 		Company:     project.Company.ID,
 		Description: project.Description,
-		Schedule:    project.Schedule,
 		Starts:      project.Starts,
 		Ends:        project.Ends,
 	}

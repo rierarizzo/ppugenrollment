@@ -41,6 +41,8 @@ func (d *DefaultRepository) ApproveEnrollmentApplication(applicationID, approved
 		return 0, domain.NewAppError(err, domain.RepositoryError)
 	}
 
+	_ = tx.Commit()
+
 	generatedID, _ := result.LastInsertId()
 
 	return int(generatedID), nil
@@ -50,13 +52,12 @@ func (d *DefaultRepository) SelectEnrollmentGenerated(generatedID int) (*domain.
 	var generatedModel EnrollmentGeneratedModel
 
 	enrollmentGeneratedQuery := `
-		SELECT 
-			eg.id as id,
+		SELECT eg.id as id,
 			eg.enrollment_application as application_id,
 			eg.generated_at as generated_at,
 			p.id as project_id,
 			p.description as project_description,
-			p.schedule as project_schedule,
+			ps.schedule as project_schedule,
 			p.starts as project_starts,
 			p.ends as project_ends,
 			c.id as company_id,
@@ -69,6 +70,7 @@ func (d *DefaultRepository) SelectEnrollmentGenerated(generatedID int) (*domain.
 		FROM enrollment_generated eg 
 		    INNER JOIN enrollment_application ea ON eg.enrollment_application = ea.id
 			INNER JOIN project p ON ea.project = p.id 
+		    INNER JOIN project_schedule ps ON p.id = ps.project 
 		    INNER JOIN company c ON p.company = c.id 
 		    INNER JOIN sys_user su ON eg.approved_by = su.id 
 		WHERE eg.id=?

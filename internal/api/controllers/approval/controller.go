@@ -10,7 +10,7 @@ import (
 
 func Routes(g *echo.Group) func(approver enrollment_application_approver.Approver) {
 	return func(approver enrollment_application_approver.Approver) {
-		g.POST("/approve/:application_id", approveEnrollmentApplication(approver))
+		g.POST("/approveEnrollmentApplication/:application_id", approveEnrollmentApplication(approver))
 	}
 }
 
@@ -18,12 +18,12 @@ func approveEnrollmentApplication(approver enrollment_application_approver.Appro
 	return func(c echo.Context) error {
 		applicationID, err := strconv.Atoi(c.Param("application_id"))
 		if err != nil {
-			return domain.NewAppError(err, domain.BadRequestError)
+			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
 		generated, appErr := approver.ApproveEnrollmentApplication(applicationID, 1)
 		if appErr != nil {
-			return appErr
+			return c.JSON(http.StatusInternalServerError, appErr)
 		}
 
 		response := fromGeneratedToResponse(generated)
