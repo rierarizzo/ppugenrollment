@@ -21,7 +21,9 @@ func approveEnrollmentApplication(approver enrollment_application_approver.Appro
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
-		generated, appErr := approver.ApproveEnrollmentApplication(applicationID, 1)
+		approvedBy := c.Get("UserID").(int)
+
+		generated, appErr := approver.ApproveEnrollmentApplication(applicationID, approvedBy)
 		if appErr != nil {
 			return c.JSON(http.StatusInternalServerError, appErr)
 		}

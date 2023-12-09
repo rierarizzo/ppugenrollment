@@ -20,8 +20,10 @@ func enrollToProject(enroller project_enroller.Enroller) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
+		enrolledBy := c.Get("UserID").(int)
+
 		enrollmentApplication := fromRequestToApplication(&request)
-		application, appErr := enroller.EnrollToProject(&enrollmentApplication)
+		application, appErr := enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
 		if appErr != nil {
 			return c.JSON(http.StatusInternalServerError, appErr)
 		}

@@ -5,14 +5,11 @@ import (
 )
 
 type Authenticator interface {
-	Register(userRegistrable domain.UserRegistrable) *domain.AppError
+	Register(userRegistrable *domain.User) *domain.AppError
 	Login(email, password string) (*domain.AuthUserPayload, *domain.AppError)
 }
 
 type UserRepository interface {
-	InsertStudent(student *domain.Student) *domain.AppError
-	InsertAdmin(admin *domain.Admin) *domain.AppError
-	InsertApprover(approver *domain.Approver) *domain.AppError
-
+	InsertUser(student *domain.User) *domain.AppError
 	SelectUserByEmail(email string) (*domain.User, *domain.AppError)
 }

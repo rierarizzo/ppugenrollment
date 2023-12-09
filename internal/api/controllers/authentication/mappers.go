@@ -4,44 +4,18 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
-func fromRequestToStudent(request *UserRequest) domain.Student {
-	return domain.Student{
-		User: domain.User{
-			IDCardNumber: request.IDCardNumber,
-			Name:         request.Name,
-			Surname:      request.Surname,
-			Email:        request.Email,
-			Password:     request.Password,
-			Role:         request.Role,
-		},
-		DateOfBirth: request.DateOfBirth,
-		IsAGraduate: request.IsAGraduate,
-		Level:       request.Level,
+func fromRequestToUser(request *UserRequest) domain.User {
+	return domain.User{
+		IDCardNumber: request.IDCardNumber,
+		Name:         request.Name,
+		Surname:      request.Surname,
+		Email:        request.Email,
+		Password:     request.Password,
+		Role:         request.Role,
+		DateOfBirth:  request.DateOfBirth,
+		IsAGraduate:  request.IsAGraduate,
+		Level:        request.Level,
 	}
-}
-
-func fromRequestToAdmin(request *UserRequest) domain.Admin {
-	return domain.Admin{
-		User: domain.User{
-			IDCardNumber: request.IDCardNumber,
-			Name:         request.Name,
-			Surname:      request.Surname,
-			Email:        request.Email,
-			Password:     request.Password,
-			Role:         request.Role,
-		}}
-}
-
-func fromRequestToApprover(request *UserRequest) domain.Approver {
-	return domain.Approver{
-		User: domain.User{
-			IDCardNumber: request.IDCardNumber,
-			Name:         request.Name,
-			Surname:      request.Surname,
-			Email:        request.Email,
-			Password:     request.Password,
-			Role:         request.Role,
-		}}
 }
 
 func fromAuthPayloadToResponse(payload *domain.AuthUserPayload) UserResponse {

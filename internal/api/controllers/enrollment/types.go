@@ -1,7 +1,7 @@
 package enrollment
 
 type ApplicationRequest struct {
-	Student  int `json:"student"`
+	Student  int `json:"student,omitempty"`
 	Project  int `json:"project"`
 	Schedule int `json:"schedule"`
 }

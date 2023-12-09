@@ -13,7 +13,7 @@ func fromApplicationToResponse(application *domain.EnrollmentApplication) Applic
 
 func fromRequestToApplication(request *ApplicationRequest) domain.EnrollmentApplication {
 	return domain.EnrollmentApplication{
-		Student:  domain.Student{User: domain.User{ID: request.Student}},
+		Student:  domain.User{ID: request.Student},
 		Project:  domain.Project{ID: request.Project},
 		Schedule: request.Schedule,
 	}

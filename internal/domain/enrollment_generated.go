@@ -6,6 +6,6 @@ type EnrollmentGenerated struct {
 	ID                    int
 	EnrollmentApplication int
 	Project               Project
-	ApprovedBy            Approver
+	ApprovedBy            User
 	GeneratedAt           time.Time
 }

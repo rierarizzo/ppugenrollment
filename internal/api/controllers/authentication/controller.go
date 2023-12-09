@@ -22,25 +22,10 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
-		var authenticatorErr *domain.AppError
-		switch request.Role {
-		case "S": // Student
-			student := fromRequestToStudent(&request)
-			authenticatorErr = userAuth.Register(&student)
-			break
-		case "A": // Approver
-			approver := fromRequestToApprover(&request)
-			authenticatorErr = userAuth.Register(&approver)
-			break
-		case "M": // Admin
-			admin := fromRequestToAdmin(&request)
-			authenticatorErr = userAuth.Register(&admin)
-		default:
-			return c.JSON(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
-		}
-
-		if authenticatorErr != nil {
-			return c.JSON(http.StatusInternalServerError, authenticatorErr)
+		user := fromRequestToUser(&request)
+		appErr := userAuth.Register(&user)
+		if appErr != nil {
+			return c.JSON(http.StatusInternalServerError, appErr)
 		}
 
 		return c.JSON(http.StatusAccepted, "OK")

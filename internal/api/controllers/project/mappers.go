@@ -6,6 +6,7 @@ func fromProjectToResponse(project *domain.Project) Response {
 	return Response{
 		ID:          project.ID,
 		Company:     project.Company.ID,
+		Name:        project.Name,
 		Description: project.Description,
 		Starts:      project.Starts,
 		Ends:        project.Ends,

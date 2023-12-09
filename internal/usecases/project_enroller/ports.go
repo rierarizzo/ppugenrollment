@@ -3,7 +3,9 @@ package project_enroller
 import "ppugenrollment/internal/domain"
 
 type Enroller interface {
-	EnrollToProject(application *domain.EnrollmentApplication) (*domain.EnrollmentApplication, *domain.AppError)
+	EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (
+		*domain.EnrollmentApplication,
+		*domain.AppError)
 }
 
 type EnrollmentRepository interface {

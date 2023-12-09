@@ -4,50 +4,7 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
-func fromStudentToStudentModel(student *domain.Student) StudentModel {
-	return StudentModel{
-		Model: Model{
-			ID:           student.User.ID,
-			IDCardNumber: student.User.IDCardNumber,
-			Name:         student.User.Name,
-			Surname:      student.User.Surname,
-			Email:        student.User.Email,
-			Password:     student.User.Password,
-			Role:         student.User.Role,
-		},
-		DateOfBirth: student.DateOfBirth,
-		IsAGraduate: student.IsAGraduate,
-		Level:       student.Level,
-	}
-}
-
-func fromAdminToAdminModel(admin *domain.Admin) AdminModel {
-	return AdminModel{
-		Model{
-			ID:           admin.User.ID,
-			IDCardNumber: admin.User.IDCardNumber,
-			Name:         admin.User.Name,
-			Surname:      admin.User.Surname,
-			Email:        admin.User.Email,
-			Password:     admin.User.Password,
-			Role:         admin.User.Role,
-		}}
-}
-
-func fromApproverToApproverModel(approver *domain.Approver) ApproverModel {
-	return ApproverModel{
-		Model{
-			ID:           approver.User.ID,
-			IDCardNumber: approver.User.IDCardNumber,
-			Name:         approver.User.Name,
-			Surname:      approver.User.Surname,
-			Email:        approver.User.Email,
-			Password:     approver.User.Password,
-			Role:         approver.User.Role,
-		}}
-}
-
-func fromCommonFieldsModelToUser(fields *Model) domain.User {
+func fromModelToUser(fields *Model) domain.User {
 	return domain.User{
 		ID:           fields.ID,
 		IDCardNumber: fields.IDCardNumber,
@@ -56,5 +13,23 @@ func fromCommonFieldsModelToUser(fields *Model) domain.User {
 		Email:        fields.Email,
 		Password:     fields.Password,
 		Role:         fields.Role,
+		DateOfBirth:  fields.DateOfBirth,
+		IsAGraduate:  fields.IsAGraduate,
+		Level:        fields.Level,
+	}
+}
+
+func fromUserToModel(user *domain.User) Model {
+	return Model{
+		ID:           user.ID,
+		IDCardNumber: user.IDCardNumber,
+		Name:         user.Name,
+		Surname:      user.Surname,
+		Email:        user.Email,
+		Password:     user.Password,
+		Role:         user.Role,
+		DateOfBirth:  user.DateOfBirth,
+		IsAGraduate:  user.IsAGraduate,
+		Level:        user.Level,
 	}
 }

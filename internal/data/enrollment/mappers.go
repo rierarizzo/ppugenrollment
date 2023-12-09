@@ -7,10 +7,8 @@ import (
 func fromModelToEnrollmentApplication(model *ApplicationModel) domain.EnrollmentApplication {
 	return domain.EnrollmentApplication{
 		ID: model.ID,
-		Student: domain.Student{
-			User: domain.User{
-				ID: model.Student,
-			},
+		Student: domain.User{
+			ID: model.Student,
 		},
 		Project: domain.Project{
 			ID: model.Project,

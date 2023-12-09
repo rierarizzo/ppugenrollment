@@ -9,23 +9,22 @@ func fromModelToEnrollmentGenerated(model *EnrollmentGeneratedModel) domain.Enro
 		ID:                    model.ID,
 		EnrollmentApplication: model.EnrollmentApplication,
 		Project: domain.Project{
-			ID: model.Project.ID,
+			ID: model.ProjectID,
 			Company: domain.Company{
-				ID:   model.Project.Company.ID,
-				Name: model.Project.Company.Name,
-				RUC:  model.Project.Company.RUC,
+				ID:   model.CompanyID,
+				Name: model.CompanyName,
+				RUC:  model.CompanyRUC,
 			},
-			Description: model.Project.Description,
-			Starts:      model.Project.Starts,
-			Ends:        model.Project.Ends,
+			Description: model.ProjectDescription,
+			Starts:      model.ProjectStarts,
+			Ends:        model.ProjectEnds,
 		},
-		ApprovedBy: domain.Approver{
-			User: domain.User{
-				ID:           model.ApprovedBy.ID,
-				IDCardNumber: model.ApprovedBy.IDCardNumber,
-				Name:         model.ApprovedBy.Name,
-				Surname:      model.ApprovedBy.Surname,
-			}},
+		ApprovedBy: domain.User{
+			ID:           model.ApproverID,
+			IDCardNumber: model.ApproverIDCardNumber,
+			Name:         model.ApproverName,
+			Surname:      model.ApproverSurname,
+		},
 		GeneratedAt: model.GeneratedAt,
 	}
 }

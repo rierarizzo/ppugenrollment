@@ -14,6 +14,9 @@ func New(db *sqlx.DB) *DefaultRepository {
 	return &DefaultRepository{db}
 }
 
+// TODO: Revisar porqué no trae información de approvedBy ni projectSchedule en SelectEnrollmentGenerated.
+// TODO: Unificar ambos métodos y usar transacción.
+
 func (d *DefaultRepository) ApproveEnrollmentApplication(applicationID, approvedBy int) (int, *domain.AppError) {
 	tx, _ := d.db.Beginx()
 
@@ -29,7 +32,7 @@ func (d *DefaultRepository) ApproveEnrollmentApplication(applicationID, approved
 	if rowsAffected, _ := result.RowsAffected(); rowsAffected != 1 {
 		slog.Error("0 rows affected")
 		_ = tx.Rollback()
-		return 0, domain.NewAppErrorWithType(domain.RepositoryError)
+		return 0, domain.NewAppError("application already approved", domain.RepositoryError)
 	}
 
 	insertIntoEnrollmentGenerated := `
@@ -72,7 +75,7 @@ func (d *DefaultRepository) SelectEnrollmentGenerated(generatedID int) (*domain.
 			INNER JOIN project p ON ea.project = p.id 
 		    INNER JOIN project_schedule ps ON p.id = ps.project 
 		    INNER JOIN company c ON p.company = c.id 
-		    INNER JOIN sys_user su ON eg.approved_by = su.id 
+		    INNER JOIN user su ON eg.approved_by = su.id 
 		WHERE eg.id=?
 	`
 	err := d.db.Get(&generatedModel, enrollmentGeneratedQuery, generatedID)

@@ -10,11 +10,12 @@ func New(enrollmentRepo EnrollmentRepository) *DefaultEnroller {
 	return &DefaultEnroller{enrollmentRepo}
 }
 
-func (p *DefaultEnroller) EnrollToProject(application *domain.EnrollmentApplication) (
+func (p *DefaultEnroller) EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (
 	*domain.EnrollmentApplication,
 	*domain.AppError) {
+	application.Student = domain.User{ID: enrolledBy}
+
 	defaultResponse := domain.EnrollmentApplication{
-		ID:       0,
 		Student:  application.Student,
 		Project:  application.Project,
 		Schedule: application.Schedule,

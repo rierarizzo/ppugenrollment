@@ -1,6 +1,7 @@
 package enrollment_application_approver
 
 import (
+	"log/slog"
 	"ppugenrollment/internal/domain"
 )
 
@@ -17,11 +18,13 @@ func (d *DefaultApprover) ApproveEnrollmentApplication(applicationID, approvedBy
 	*domain.AppError) {
 	generatedID, appErr := d.approvalRepo.ApproveEnrollmentApplication(applicationID, approvedBy)
 	if appErr != nil {
+		slog.Error(appErr.Error())
 		return nil, domain.NewAppError(appErr, domain.UnexpectedError)
 	}
 
 	generated, appErr := d.approvalRepo.SelectEnrollmentGenerated(generatedID)
 	if appErr != nil {
+		slog.Error(appErr.Error())
 		return nil, domain.NewAppError(appErr, domain.UnexpectedError)
 	}
 

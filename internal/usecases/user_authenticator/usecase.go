@@ -15,29 +15,15 @@ func New(userRepo UserRepository) *DefaultAuthenticator {
 	return &DefaultAuthenticator{userRepo}
 }
 
-func (a *DefaultAuthenticator) Register(userRegistrable domain.UserRegistrable) *domain.AppError {
-	user := userRegistrable.GetUser()
-
+func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 	appErr := a.cryptUserPassword(user)
 	if appErr != nil {
 		return appErr
 	}
 
-	var repositoryErr *domain.AppError
-	switch u := userRegistrable.(type) {
-	case *domain.Student:
-		repositoryErr = a.userRepo.InsertStudent(u)
-	case *domain.Approver:
-		repositoryErr = a.userRepo.InsertApprover(u)
-	case *domain.Admin:
-		repositoryErr = a.userRepo.InsertAdmin(u)
-	default:
-		slog.Error("Error while determining user type")
-		repositoryErr = domain.NewAppErrorWithType(domain.UnexpectedError)
-	}
-
-	if repositoryErr != nil {
-		slog.Error(repositoryErr.Error())
+	appErr = a.userRepo.InsertUser(user)
+	if appErr != nil {
+		slog.Error(appErr.Error())
 		return domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
 

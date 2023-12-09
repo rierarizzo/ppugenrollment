@@ -4,7 +4,7 @@ import "time"
 
 type EnrollmentApplication struct {
 	ID        int
-	Student   Student
+	Student   User
 	Project   Project
 	Schedule  int
 	AppliedOn time.Time
