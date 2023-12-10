@@ -7,6 +7,5 @@ type Approver interface {
 }
 
 type ApprovalRepository interface {
-	ApproveEnrollmentApplication(applicationID, approvedBy int) (int, *domain.AppError)
-	SelectEnrollmentGenerated(generatedID int) (*domain.EnrollmentGenerated, *domain.AppError)
+	ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated, *domain.AppError)
 }

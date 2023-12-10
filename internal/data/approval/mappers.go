@@ -19,6 +19,7 @@ func fromModelToEnrollmentGenerated(model *EnrollmentGeneratedModel) domain.Enro
 			Starts:      model.ProjectStarts,
 			Ends:        model.ProjectEnds,
 		},
+		Schedule: model.ProjectSchedule,
 		ApprovedBy: domain.User{
 			ID:           model.ApproverID,
 			IDCardNumber: model.ApproverIDCardNumber,

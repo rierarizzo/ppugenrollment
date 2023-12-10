@@ -15,11 +15,17 @@ func fromGeneratedToResponse(generated *domain.EnrollmentGenerated) EnrollmentGe
 				Name: generated.Project.Company.Name,
 				RUC:  generated.Project.Company.RUC,
 			},
+			Schedule:    generated.Schedule,
 			Description: generated.Project.Description,
 			Starts:      generated.Project.Starts,
 			Ends:        generated.Project.Ends,
 		},
-		ApprovedBy:  approvedByResponse{},
+		ApprovedBy: approvedByResponse{
+			ID:           generated.ApprovedBy.ID,
+			IDCardNumber: generated.ApprovedBy.IDCardNumber,
+			Name:         generated.ApprovedBy.Name,
+			Surname:      generated.ApprovedBy.Surname,
+		},
 		GeneratedAt: generated.GeneratedAt,
 	}
 }

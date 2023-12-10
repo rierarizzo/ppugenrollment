@@ -16,13 +16,7 @@ func New(approvalRepo ApprovalRepository) *DefaultApprover {
 func (d *DefaultApprover) ApproveEnrollmentApplication(applicationID, approvedBy int) (
 	*domain.EnrollmentGenerated,
 	*domain.AppError) {
-	generatedID, appErr := d.approvalRepo.ApproveEnrollmentApplication(applicationID, approvedBy)
-	if appErr != nil {
-		slog.Error(appErr.Error())
-		return nil, domain.NewAppError(appErr, domain.UnexpectedError)
-	}
-
-	generated, appErr := d.approvalRepo.SelectEnrollmentGenerated(generatedID)
+	generated, appErr := d.approvalRepo.ApproveEnrollmentApplication(applicationID, approvedBy)
 	if appErr != nil {
 		slog.Error(appErr.Error())
 		return nil, domain.NewAppError(appErr, domain.UnexpectedError)
