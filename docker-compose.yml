@@ -6,8 +6,32 @@ services:
       context: .
       dockerfile: ./dockerfile
     restart: always
+    environment:
+      DB_USER: 'user'
+      DB_PASSWORD: 'password'
+      DB_HOST: 'mysql-instance'
+      DB_NAME: 'ppugenrollment'
     ports:
-      - "8080:80"
+      - '8080:80'
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - mysql-instance
+
+  mysql-instance:
+    image: mysql:5.7
+    restart: unless-stopped
+    command: --explicit_defaults_for_timestamp=true
+    environment:
+      MYSQL_DATABASE: 'ppugenrollment'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3333:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./db-data/mysql/:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d

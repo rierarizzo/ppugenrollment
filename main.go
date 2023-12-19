@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"ppugenrollment/internal/api"
 	"ppugenrollment/internal/data"
 	"ppugenrollment/internal/data/approval"
@@ -17,7 +18,12 @@ import (
 const webPort = "80"
 
 func main() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", "root", "root", "localhost", "3306", "ppugenrollment")
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?parseTime=true",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_NAME"))
 	dbConn := data.ConnectToMySQL(dsn)
 
 	userRepo := user.New(dbConn)

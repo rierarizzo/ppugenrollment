@@ -5,7 +5,7 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
-RUN CGO_ENABLED=0 go build -o enrollmentApp ./cmd/api
+RUN CGO_ENABLED=0 go build -o enrollmentApp .
 
 RUN chmod +x /app/enrollmentApp
 
