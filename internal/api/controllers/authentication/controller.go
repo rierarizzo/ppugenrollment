@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"log/slog"
 	"net/http"
 	"ppugenrollment/internal/domain"
 	auth "ppugenrollment/internal/usecases/user_authenticator"
@@ -19,6 +20,7 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {
+			slog.Error(err.Error())
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
@@ -36,6 +38,7 @@ func login(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request UserRequest
 		if err := c.Bind(&request); err != nil {
+			slog.Error(err.Error())
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 

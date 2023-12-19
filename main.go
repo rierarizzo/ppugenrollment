@@ -14,6 +14,8 @@ import (
 	"ppugenrollment/internal/usecases/user_authenticator"
 )
 
+const webPort = "80"
+
 func main() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", "root", "root", "localhost", "3306", "ppugenrollment")
 	dbConn := data.ConnectToMySQL(dsn)
@@ -32,5 +34,5 @@ func main() {
 
 	router := api.Router(userAuth, projectMngr, projectEnroller, applicationApprover)
 
-	router.Logger.Fatal(router.Start(fmt.Sprintf(":%s", "8080")))
+	router.Logger.Fatal(router.Start(fmt.Sprintf(":%s", webPort)))
 }
