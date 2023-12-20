@@ -14,6 +14,8 @@ func NewEnrollmentRepository(db *sqlx.DB) *DefaultEnrollmentRepository {
 	return &DefaultEnrollmentRepository{db}
 }
 
+// InsertEnrollment takes an EnrollmentApplication and inserts it into the enrollment_application table in the database.
+// It returns the ID of the last inserted row and an AppError if any error occurred during the insertion.
 func (d *DefaultEnrollmentRepository) InsertEnrollment(application *domain.EnrollmentApplication) (
 	int,
 	*domain.AppError) {

@@ -15,6 +15,9 @@ func ApprovalRoutes(g *echo.Group) func(approver ports.Approver) {
 	}
 }
 
+// approveEnrollmentApplication processes the approval of an enrollment application.
+// It takes an approver that has the capability to approve enrollment applications.
+// It returns an echo.HandlerFunc which handles the approval request.
 func approveEnrollmentApplication(approver ports.Approver) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		applicationID, err := strconv.Atoi(c.Param("application_id"))

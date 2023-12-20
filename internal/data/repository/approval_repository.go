@@ -16,13 +16,9 @@ func NewApprovalRepository(db *sqlx.DB) *DefaultApprovalRepository {
 	return &DefaultApprovalRepository{db}
 }
 
-// ApproveEnrollmentApplication approves an enrollment application with the given application ID and approvedBy ID.
-// It updates the status of the enrollment application to 'A' (approved) and inserts a new record into the enrollment_generated table.
-// It retrieves the generated enrollment information and returns it as an EnrollmentGenerated object.
-// If any error occurs during the process, it rolls back the transaction and returns an AppError object.
-// The returned EnrollmentGenerated object is created by mapping the data from the EnrollmentGeneratedModel object.
-// The function signature is:
-// func (d *DefaultApprovalRepository) ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated, *domain.AppError)
+// ApproveEnrollmentApplication approves an enrollment application and generates an enrollment record.
+// It takes the applicationID and approvedBy as parameters.
+// It returns the generated enrollment record and an error.
 func (d *DefaultApprovalRepository) ApproveEnrollmentApplication(applicationID, approvedBy int) (
 	*domain.EnrollmentGenerated,
 	*domain.AppError) {
