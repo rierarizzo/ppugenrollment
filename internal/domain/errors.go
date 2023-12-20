@@ -57,7 +57,7 @@ func NewAppError(err interface{}, errType string) *AppError {
 	case error:
 		actualErr = e
 	}
-	
+
 	return &AppError{
 		Err:  actualErr,
 		Type: errType,

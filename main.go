@@ -5,14 +5,8 @@ import (
 	"os"
 	"ppugenrollment/internal/api"
 	"ppugenrollment/internal/data"
-	"ppugenrollment/internal/data/approval"
-	"ppugenrollment/internal/data/enrollment"
-	"ppugenrollment/internal/data/project"
-	"ppugenrollment/internal/data/user"
-	"ppugenrollment/internal/usecases/enrollment_application_approver"
-	"ppugenrollment/internal/usecases/project_enroller"
-	"ppugenrollment/internal/usecases/project_manager"
-	"ppugenrollment/internal/usecases/user_authenticator"
+	"ppugenrollment/internal/data/repository"
+	"ppugenrollment/internal/usecases"
 )
 
 const webPort = "80"
@@ -26,17 +20,17 @@ func main() {
 		os.Getenv("DB_NAME"))
 	dbConn := data.ConnectToMySQL(dsn)
 
-	userRepo := user.New(dbConn)
-	userAuth := *user_authenticator.New(userRepo)
+	userRepo := repository.NewUserRepository(dbConn)
+	userAuth := *usecases.NewUserAuthenticator(userRepo)
 
-	projectRepo := project.New(dbConn)
-	projectMngr := *project_manager.New(projectRepo)
+	projectRepo := repository.NewProjectRepository(dbConn)
+	projectMngr := *usecases.NewProjectManager(projectRepo)
 
-	enrollmentRepo := enrollment.New(dbConn)
-	projectEnroller := *project_enroller.New(enrollmentRepo)
+	enrollmentRepo := repository.NewEnrollmentRepository(dbConn)
+	projectEnroller := *usecases.NewProjectEnroller(enrollmentRepo)
 
-	approvalRepo := approval.New(dbConn)
-	applicationApprover := *enrollment_application_approver.New(approvalRepo)
+	approvalRepo := repository.NewApprovalRepository(dbConn)
+	applicationApprover := *usecases.NewEnrollmentApprover(approvalRepo)
 
 	router := api.Router(userAuth, projectMngr, projectEnroller, applicationApprover)
 
