@@ -15,6 +15,8 @@ func EnrollmentRoutes(g *echo.Group) func(enroller ports.Enroller) {
 	}
 }
 
+// enrollToProject is a function that handles the enrollment of a student to a project. It takes an enroller and returns
+// an echo.HandlerFunc that can be used as a handler for HTTP requests
 func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request types.EnrollmentApplicationRequest
