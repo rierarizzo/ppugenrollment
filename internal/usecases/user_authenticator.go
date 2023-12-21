@@ -17,15 +17,16 @@ func NewUserAuthenticator(userRepo ports.UserRepository) *DefaultAuthenticator {
 }
 
 func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
-	appErr := a.cryptUserPassword(user)
+	appErr := encryptUserPassword(user)
+
 	if appErr != nil {
-		return appErr
+		return handleError(appErr, domain.UnexpectedError)
 	}
 
 	appErr = a.userRepo.InsertUser(user)
+
 	if appErr != nil {
-		slog.Error(appErr.Error())
-		return domain.NewAppErrorWithType(domain.UnexpectedError)
+		return handleError(appErr, domain.UnexpectedError)
 	}
 
 	return nil
@@ -33,21 +34,21 @@ func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 
 func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
 	user, appErr := a.userRepo.SelectUserByEmail(email)
+
 	if appErr != nil {
-		slog.Error(appErr.Error())
-		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+		return nil, handleError(appErr, domain.NotAuthenticatedError)
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
 	if err != nil {
-		slog.Error(err.Error())
-		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+		return nil, handleError(err, domain.NotAuthenticatedError)
 	}
 
 	token, appErr := security.CreateJWTToken(*user)
+
 	if appErr != nil {
-		slog.Error(appErr.Error())
-		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
+		return nil, handleError(appErr, domain.NotAuthenticatedError)
 	}
 
 	payload := &domain.AuthUserPayload{
@@ -58,14 +59,18 @@ func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPa
 	return payload, nil
 }
 
-func (a *DefaultAuthenticator) cryptUserPassword(user *domain.User) *domain.AppError {
+func encryptUserPassword(user *domain.User) *domain.AppError {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
 	if err != nil {
-		slog.Error(err.Error())
-		return domain.NewAppError(err, domain.UnexpectedError)
+		return handleError(err, domain.UnexpectedError)
 	}
 
 	user.Password = string(bytes)
-
 	return nil
+}
+
+func handleError(err error, errType string) *domain.AppError {
+	slog.Error(err.Error())
+	return domain.NewAppError(err, errType)
 }
