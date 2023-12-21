@@ -3,8 +3,7 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 	"ppugenrollment/internal/api/controllers"
-	"ppugenrollment/internal/api/middlewares/auth"
-	"ppugenrollment/internal/api/middlewares/cors"
+	"ppugenrollment/internal/api/middlewares"
 	"ppugenrollment/internal/usecases"
 )
 
@@ -15,20 +14,20 @@ func Router(
 	approver usecases.DefaultApprover) *echo.Echo {
 	e := echo.New()
 
-	e.Use(cors.Middleware())
+	e.Use(middlewares.Middleware())
 
 	authGroup := e.Group("/authentication")
 	controllers.AuthRoutes(authGroup)(&userAuth)
 
-	auth.RoutesAllowedByRoles = routesAllowedByRoles()
+	middlewares.RoutesAllowedByRoles = routesAllowedByRoles()
 
-	projectMngrGroup := e.Group("/project", auth.Verify)
+	projectMngrGroup := e.Group("/project", middlewares.Verify)
 	controllers.ProjectRoutes(projectMngrGroup)(&projectMngr)
 
-	enrollmentGroup := e.Group("/enrollment", auth.Verify)
+	enrollmentGroup := e.Group("/enrollment", middlewares.Verify)
 	controllers.EnrollmentRoutes(enrollmentGroup)(&enroller)
 
-	approvalGroup := e.Group("/approval", auth.Verify)
+	approvalGroup := e.Group("/approval", middlewares.Verify)
 	controllers.ApprovalRoutes(approvalGroup)(&approver)
 
 	return e
