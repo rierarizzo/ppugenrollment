@@ -16,7 +16,6 @@ func FromApplicationToResponse(application *domain.EnrollmentApplication) types.
 
 func FromRequestToApplication(request *types.EnrollmentApplicationRequest) domain.EnrollmentApplication {
 	return domain.EnrollmentApplication{
-		Student:  domain.User{ID: request.Student},
 		Project:  domain.Project{ID: request.Project},
 		Schedule: request.Schedule,
 	}

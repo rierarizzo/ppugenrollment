@@ -1,9 +1,8 @@
 package types
 
 type EnrollmentApplicationRequest struct {
-	Student  int `json:"student,omitempty"`
-	Project  int `json:"project"`
-	Schedule int `json:"schedule"`
+	Project  int `json:"project" validate:"required"`
+	Schedule int `json:"schedule" validate:"required"`
 }
 
 type EnrollmentApplicationResponse struct {

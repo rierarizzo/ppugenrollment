@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/labstack/echo/v4"
+	"log/slog"
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
 	"ppugenrollment/internal/api/types"
@@ -25,6 +26,11 @@ func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
 		}
 
 		enrolledBy := c.Get("UserID").(int)
+
+		if err := validateStruct(request); err != nil {
+			slog.Error(err.Error())
+			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+		}
 
 		enrollmentApplication := mappers.FromRequestToApplication(&request)
 		application, appErr := enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
