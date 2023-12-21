@@ -17,16 +17,14 @@ func NewUserAuthenticator(userRepo ports.UserRepository) *DefaultAuthenticator {
 }
 
 func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
-	appErr := encryptUserPassword(user)
-
-	if appErr != nil {
-		return handleError(appErr, domain.UnexpectedError)
+	if err := encryptUserPassword(user); err != nil {
+		slog.Error(err.Error())
+		return domain.NewAppError(err, domain.UnexpectedError)
 	}
 
-	appErr = a.userRepo.InsertUser(user)
-
-	if appErr != nil {
-		return handleError(appErr, domain.UnexpectedError)
+	if appErr := a.userRepo.InsertUser(user); appErr != nil {
+		slog.Error(appErr.Error())
+		return domain.NewAppError(appErr, domain.UnexpectedError)
 	}
 
 	return nil
@@ -34,21 +32,20 @@ func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 
 func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
 	user, appErr := a.userRepo.SelectUserByEmail(email)
-
 	if appErr != nil {
-		return nil, handleError(appErr, domain.NotAuthenticatedError)
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppError(appErr, domain.NotAuthenticatedError)
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-
-	if err != nil {
-		return nil, handleError(err, domain.NotAuthenticatedError)
+	if err := decryptUserPassword(user.Password, password); err != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppError(err, domain.NotAuthenticatedError)
 	}
 
 	token, appErr := security.CreateJWTToken(*user)
-
 	if appErr != nil {
-		return nil, handleError(appErr, domain.NotAuthenticatedError)
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppError(appErr, domain.NotAuthenticatedError)
 	}
 
 	payload := &domain.AuthUserPayload{
@@ -59,18 +56,16 @@ func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPa
 	return payload, nil
 }
 
-func encryptUserPassword(user *domain.User) *domain.AppError {
+func encryptUserPassword(user *domain.User) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-
 	if err != nil {
-		return handleError(err, domain.UnexpectedError)
+		return err
 	}
 
 	user.Password = string(bytes)
 	return nil
 }
 
-func handleError(err error, errType string) *domain.AppError {
-	slog.Error(err.Error())
-	return domain.NewAppError(err, errType)
+func decryptUserPassword(userPassword, passwordFromDB string) error {
+	return bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(passwordFromDB))
 }
