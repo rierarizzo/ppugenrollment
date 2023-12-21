@@ -64,6 +64,13 @@ func login(userAuth auth.Authenticator) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
 		}
 
+		validate := validator.New()
+		err := validate.Struct(request)
+		if err != nil {
+			slog.Error(err.Error())
+			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+		}
+
 		authPayload, appErr := userAuth.Login(request.Email, request.Password)
 		if appErr != nil {
 			return c.JSON(http.StatusInternalServerError, appErr)
