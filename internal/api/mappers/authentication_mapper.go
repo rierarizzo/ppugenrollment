@@ -5,7 +5,7 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
-func FromRequestToUser(request *types.UserRequest) domain.User {
+func FromRegisterRequestToUser(request *types.UserRegisterRequest) domain.User {
 	return domain.User{
 		IDCardNumber: request.IDCardNumber,
 		Name:         request.Name,

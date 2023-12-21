@@ -2,16 +2,21 @@ package types
 
 import "time"
 
-type UserRequest struct {
-	IDCardNumber string    `json:"id_card_number,omitempty"`
-	Name         string    `json:"name,omitempty"`
-	Surname      string    `json:"surname,omitempty"`
-	Email        string    `json:"email"`
-	Password     string    `json:"password"`
-	Role         string    `json:"role,omitempty"`
-	DateOfBirth  time.Time `json:"date_of_birth,omitempty"`
-	IsAGraduate  bool      `json:"is_a_graduate,omitempty"`
-	Level        int       `json:"level,omitempty"`
+type UserRegisterRequest struct {
+	IDCardNumber string    `json:"id_card_number" validate:"required"`
+	Name         string    `json:"name" validate:"required"`
+	Surname      string    `json:"surname" validate:"required"`
+	Email        string    `json:"email" validate:"required,email"`
+	Password     string    `json:"password" validate:"required"`
+	Role         string    `json:"role" validate:"required"`
+	DateOfBirth  time.Time `json:"date_of_birth"`
+	IsAGraduate  bool      `json:"is_a_graduate"`
+	Level        int       `json:"level"`
+}
+
+type UserLoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 type UserResponse struct {
