@@ -1,6 +1,23 @@
 version: '3'
 
 services:
+  mysql-instance:
+    image: mysql:5.7
+    restart: unless-stopped
+    command: --explicit_defaults_for_timestamp=true
+    environment:
+      MYSQL_DATABASE: 'ppugenrollment'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3334:3306'
+    expose:
+      - '3334'
+    volumes:
+      - ./db-data/mysql/:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+
   enrollment-app:
     build:
       context: .
@@ -18,20 +35,3 @@ services:
       replicas: 1
     depends_on:
       - mysql-instance
-
-  mysql-instance:
-    image: mysql:5.7
-    restart: unless-stopped
-    command: --explicit_defaults_for_timestamp=true
-    environment:
-      MYSQL_DATABASE: 'ppugenrollment'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'root'
-    ports:
-      - '3334:3306'
-    expose:
-      - '3334'
-    volumes:
-      - ./db-data/mysql/:/var/lib/mysql
-      - ./db-init:/docker-entrypoint-initdb.d
