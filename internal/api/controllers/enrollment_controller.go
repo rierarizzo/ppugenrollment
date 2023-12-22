@@ -21,25 +21,28 @@ func EnrollmentRoutes(g *echo.Group) func(enroller ports.Enroller) {
 func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request types.EnrollmentApplicationRequest
+
 		if err := c.Bind(&request); err != nil {
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			slog.Error(err.Error())
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		enrolledBy := c.Get("UserID").(int)
 
 		if err := validateStruct(request); err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		enrollmentApplication := mappers.FromRequestToApplication(&request)
 		application, appErr := enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
+
 		if appErr != nil {
-			return c.JSON(http.StatusInternalServerError, appErr)
+			return sendError(http.StatusInternalServerError, appErr)
 		}
 
 		response := mappers.FromApplicationToResponse(application)
 
-		return c.JSON(http.StatusAccepted, response)
+		return sendOK(c, http.StatusAccepted, "Enrollment applied", response)
 	}
 }

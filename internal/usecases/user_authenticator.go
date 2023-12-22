@@ -19,12 +19,12 @@ func NewUserAuthenticator(userRepo ports.UserRepository) *DefaultAuthenticator {
 func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 	if err := encryptUserPassword(user); err != nil {
 		slog.Error(err.Error())
-		return domain.NewAppError(err, domain.UnexpectedError)
+		return domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
 
 	if appErr := a.userRepo.InsertUser(user); appErr != nil {
 		slog.Error(appErr.Error())
-		return domain.NewAppError(appErr, domain.UnexpectedError)
+		return domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
 
 	return nil
@@ -32,20 +32,22 @@ func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 
 func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
 	user, appErr := a.userRepo.SelectUserByEmail(email)
+
 	if appErr != nil {
 		slog.Error(appErr.Error())
-		return nil, domain.NewAppError(appErr, domain.NotAuthenticatedError)
+		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
 	}
 
 	if err := decryptUserPassword(user.Password, password); err != nil {
 		slog.Error(appErr.Error())
-		return nil, domain.NewAppError(err, domain.NotAuthenticatedError)
+		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
 	}
 
 	token, appErr := security.CreateJWTToken(*user)
+
 	if appErr != nil {
 		slog.Error(appErr.Error())
-		return nil, domain.NewAppError(appErr, domain.NotAuthenticatedError)
+		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
 	}
 
 	payload := &domain.AuthUserPayload{
@@ -58,6 +60,7 @@ func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPa
 
 func encryptUserPassword(user *domain.User) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
 	if err != nil {
 		return err
 	}

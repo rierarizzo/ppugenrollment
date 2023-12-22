@@ -16,9 +16,10 @@ func NewProjectManager(projectRepo ports.ProjectRepository) *DefaultManager {
 
 func (d DefaultManager) GetAllProjects() ([]domain.Project, *domain.AppError) {
 	projects, appErr := d.projectRepo.SelectAllProjects()
+
 	if appErr != nil {
 		slog.Error(appErr.Error())
-		return nil, appErr
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
 
 	return projects, nil

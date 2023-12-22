@@ -20,9 +20,10 @@ func (d *DefaultApprover) ApproveEnrollmentApplication(applicationID, approvedBy
 	*domain.EnrollmentGenerated,
 	*domain.AppError) {
 	generated, appErr := d.approvalRepo.ApproveEnrollmentApplication(applicationID, approvedBy)
+
 	if appErr != nil {
 		slog.Error(appErr.Error())
-		return nil, domain.NewAppError(appErr, domain.UnexpectedError)
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
 	}
 
 	return generated, nil

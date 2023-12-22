@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"log/slog"
 	"net/http"
@@ -22,22 +21,25 @@ func AuthRoutes(g *echo.Group) func(userAuth auth.Authenticator) {
 func register(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request types.UserRegisterRequest
+
 		if err := c.Bind(&request); err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		if err := validateStruct(request); err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		user := mappers.FromRegisterRequestToUser(&request)
 		appErr := userAuth.Register(&user)
+
 		if appErr != nil {
-			return c.JSON(http.StatusInternalServerError, appErr)
+			return sendError(http.StatusInternalServerError, appErr)
 		}
-		return c.JSON(http.StatusAccepted, "OK")
+
+		return sendOK(c, http.StatusCreated, "User registered", nil)
 	}
 }
 
@@ -45,26 +47,25 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 func login(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var request types.UserLoginRequest
+
 		if err := c.Bind(&request); err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		if err := validateStruct(request); err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusBadRequest, domain.NewAppError(err, domain.BadRequestError))
+			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
 		authPayload, appErr := userAuth.Login(request.Email, request.Password)
-		if appErr != nil {
-			return c.JSON(http.StatusInternalServerError, appErr)
-		}
-		return c.JSON(http.StatusAccepted, mappers.FromAuthPayloadToResponse(authPayload))
-	}
-}
 
-// validateStruct is a function that validates a struct using a new validator
-func validateStruct(s interface{}) error {
-	validate := validator.New()
-	return validate.Struct(s)
+		if appErr != nil {
+			return sendError(http.StatusUnauthorized, appErr)
+		}
+
+		response := mappers.FromAuthPayloadToResponse(authPayload)
+
+		return sendOK(c, http.StatusAccepted, "User logged", response)
+	}
 }

@@ -16,10 +16,13 @@ func ProjectRoutes(g *echo.Group) func(mngr ports.Manager) {
 func getAllProjects(mngr ports.Manager) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		projects, appErr := mngr.GetAllProjects()
+
 		if appErr != nil {
-			return c.JSON(http.StatusInternalServerError, appErr)
+			return sendError(http.StatusInternalServerError, appErr)
 		}
 
-		return c.JSON(http.StatusAccepted, mappers.FromProjectsToResponse(projects))
+		response := mappers.FromProjectsToResponse(projects)
+
+		return sendOK(c, http.StatusOK, "", response)
 	}
 }
