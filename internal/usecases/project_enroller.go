@@ -6,15 +6,15 @@ import (
 	"ppugenrollment/internal/ports"
 )
 
-type DefaultEnroller struct {
+type DefaultProjectEnroller struct {
 	enrollmentRepo ports.EnrollmentRepository
 }
 
-func NewProjectEnroller(enrollmentRepo ports.EnrollmentRepository) *DefaultEnroller {
-	return &DefaultEnroller{enrollmentRepo}
+func NewProjectEnroller(enrollmentRepo ports.EnrollmentRepository) *DefaultProjectEnroller {
+	return &DefaultProjectEnroller{enrollmentRepo}
 }
 
-func (p *DefaultEnroller) EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (
+func (p *DefaultProjectEnroller) EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (
 	*domain.EnrollmentApplication,
 	*domain.AppError) {
 	application.Student = domain.User{ID: enrolledBy}

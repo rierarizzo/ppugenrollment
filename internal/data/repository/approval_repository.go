@@ -16,10 +16,7 @@ func NewApprovalRepository(db *sqlx.DB) *DefaultApprovalRepository {
 	return &DefaultApprovalRepository{db}
 }
 
-// ApproveEnrollmentApplication approves an enrollment application and generates an enrollment record.
-// It takes the applicationID and approvedBy as parameters.
-// It returns the generated enrollment record and an error.
-func (d *DefaultApprovalRepository) ApproveEnrollmentApplication(applicationID, approvedBy int) (
+func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, approvedBy int) (
 	*domain.EnrollmentGenerated,
 	*domain.AppError) {
 	tx, _ := d.db.Beginx()

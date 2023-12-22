@@ -6,15 +6,15 @@ import (
 	"ppugenrollment/internal/ports"
 )
 
-type DefaultManager struct {
+type DefaultProjectManager struct {
 	projectRepo ports.ProjectRepository
 }
 
-func NewProjectManager(projectRepo ports.ProjectRepository) *DefaultManager {
-	return &DefaultManager{projectRepo}
+func NewProjectManager(projectRepo ports.ProjectRepository) *DefaultProjectManager {
+	return &DefaultProjectManager{projectRepo}
 }
 
-func (d *DefaultManager) GetAllProjects() ([]domain.Project, *domain.AppError) {
+func (d *DefaultProjectManager) GetAllProjects() ([]domain.Project, *domain.AppError) {
 	projects, appErr := d.projectRepo.SelectAllProjects()
 
 	if appErr != nil {

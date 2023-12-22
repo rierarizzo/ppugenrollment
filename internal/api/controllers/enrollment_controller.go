@@ -12,10 +12,10 @@ import (
 )
 
 type EnrollmentController struct {
-	enroller ports.Enroller
+	enroller ports.ProjectEnroller
 }
 
-func NewEnrollmentController(enroller ports.Enroller) *EnrollmentController {
+func NewEnrollmentController(enroller ports.ProjectEnroller) *EnrollmentController {
 	return &EnrollmentController{enroller}
 }
 

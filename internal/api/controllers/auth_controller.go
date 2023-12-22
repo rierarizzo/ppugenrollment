@@ -12,10 +12,10 @@ import (
 )
 
 type AuthController struct {
-	userAuth ports.Authenticator
+	userAuth ports.UserAuthenticator
 }
 
-func NewAuthController(userAuth ports.Authenticator) *AuthController {
+func NewAuthController(userAuth ports.UserAuthenticator) *AuthController {
 	return &AuthController{userAuth}
 }
 

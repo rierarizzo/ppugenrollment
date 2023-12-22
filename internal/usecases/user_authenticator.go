@@ -8,15 +8,15 @@ import (
 	"ppugenrollment/internal/security"
 )
 
-type DefaultAuthenticator struct {
+type DefaultUserAuthenticator struct {
 	userRepo ports.UserRepository
 }
 
-func NewUserAuthenticator(userRepo ports.UserRepository) *DefaultAuthenticator {
-	return &DefaultAuthenticator{userRepo}
+func NewUserAuthenticator(userRepo ports.UserRepository) *DefaultUserAuthenticator {
+	return &DefaultUserAuthenticator{userRepo}
 }
 
-func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
+func (a *DefaultUserAuthenticator) Register(user *domain.User) *domain.AppError {
 	if err := encryptUserPassword(user); err != nil {
 		slog.Error(err.Error())
 		return domain.NewAppErrorWithType(domain.UnexpectedError)
@@ -30,7 +30,7 @@ func (a *DefaultAuthenticator) Register(user *domain.User) *domain.AppError {
 	return nil
 }
 
-func (a *DefaultAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
+func (a *DefaultUserAuthenticator) Login(email, password string) (*domain.AuthUserPayload, *domain.AppError) {
 	user, appErr := a.userRepo.SelectUserByEmail(email)
 
 	if appErr != nil {

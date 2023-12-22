@@ -4,7 +4,7 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
-type Authenticator interface {
+type UserAuthenticator interface {
 	Register(userRegistrable *domain.User) *domain.AppError
 	Login(email, password string) (*domain.AuthUserPayload, *domain.AppError)
 }

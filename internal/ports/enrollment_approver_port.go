@@ -2,10 +2,10 @@ package ports
 
 import "ppugenrollment/internal/domain"
 
-type Approver interface {
+type EnrollmentApprover interface {
 	ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated, *domain.AppError)
 }
 
 type ApprovalRepository interface {
-	ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated, *domain.AppError)
+	InsertEnrollmentApproval(applicationID, approvedBy int) (*domain.EnrollmentGenerated, *domain.AppError)
 }

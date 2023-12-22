@@ -9,10 +9,10 @@ import (
 )
 
 type ProjectController struct {
-	manager ports.Manager
+	manager ports.ProjectManager
 }
 
-func NewProjectController(manager ports.Manager) *ProjectController {
+func NewProjectController(manager ports.ProjectManager) *ProjectController {
 	return &ProjectController{manager}
 }
 

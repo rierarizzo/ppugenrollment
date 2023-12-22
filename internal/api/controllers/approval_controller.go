@@ -11,10 +11,10 @@ import (
 )
 
 type ApprovalController struct {
-	approver ports.Approver
+	approver ports.EnrollmentApprover
 }
 
-func NewApprovalController(approver ports.Approver) *ApprovalController {
+func NewApprovalController(approver ports.EnrollmentApprover) *ApprovalController {
 	return &ApprovalController{approver}
 }
 
