@@ -37,6 +37,7 @@ func loadProjectManagerRouter(e *echo.Echo, projectManager ports.ProjectManager)
 
 	projectMngrGroup := e.Group("/project", middlewares.VerifyJWTAndRoles)
 	projectMngrGroup.GET("/getAllProjects", projectMngrController.GetAllProjects)
+	projectMngrGroup.POST("/insertNewProject", projectMngrController.AddNewProject)
 }
 
 func loadProjectEnrollerRouter(e *echo.Echo, projectEnroller ports.ProjectEnroller) {

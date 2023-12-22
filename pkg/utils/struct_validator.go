@@ -25,12 +25,27 @@ func (v *Validator) MustBeGreaterThan(high, value int) bool {
 	return true
 }
 
-func (v *Validator) MustNotBeEmpty(value string) bool {
+func (v *Validator) MustNotBeEmptyString(value string) bool {
 	if v.AppErr != nil {
 		return false
 	}
 
 	if value == "" {
+		v.AppErr.Type = domain.BadRequestError
+		v.AppErr.Err = fmt.Errorf("must not be empty")
+
+		return false
+	}
+
+	return true
+}
+
+func (v *Validator) MustNotBeEmptyStringArray(value []string) bool {
+	if v.AppErr != nil {
+		return false
+	}
+
+	if len(value) == 0 {
 		v.AppErr.Type = domain.BadRequestError
 		v.AppErr.Err = fmt.Errorf("must not be empty")
 

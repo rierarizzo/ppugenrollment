@@ -1,8 +1,8 @@
 package types
 
 import (
-	"ppugenrollment/internal/api/utils"
 	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/utils"
 )
 
 type EnrollmentApplicationRequest struct {

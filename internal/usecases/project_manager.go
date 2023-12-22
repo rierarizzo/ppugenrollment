@@ -24,3 +24,7 @@ func (d *DefaultProjectManager) GetAllProjects() ([]domain.Project, *domain.AppE
 
 	return projects, nil
 }
+
+func (d *DefaultProjectManager) AddNewProject(project *domain.Project) (*domain.Project, *domain.AppError) {
+	panic("unimplemented")
+}

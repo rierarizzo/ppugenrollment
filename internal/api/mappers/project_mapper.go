@@ -5,6 +5,16 @@ import (
 	"ppugenrollment/internal/domain"
 )
 
+func FromRequestToProject(request *types.ProjectRequest) domain.Project {
+	return domain.Project{
+		Company:     domain.Company{ID: request.Company},
+		Name:        request.Name,
+		Description: request.Description,
+		Starts:      request.Starts,
+		Ends:        request.Ends,
+	}
+}
+
 func FromProjectToResponse(project *domain.Project) types.ProjectResponse {
 	return types.ProjectResponse{
 		ID:          project.ID,

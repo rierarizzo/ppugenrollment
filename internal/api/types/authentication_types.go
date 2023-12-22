@@ -1,8 +1,8 @@
 package types
 
 import (
-	"ppugenrollment/internal/api/utils"
 	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/utils"
 	"time"
 )
 
@@ -21,13 +21,13 @@ type UserRegisterRequest struct {
 func (r *UserRegisterRequest) Validate() *domain.AppError {
 	v := new(utils.Validator)
 
-	v.MustNotBeEmpty(r.IDCardNumber)
-	v.MustNotBeEmpty(r.Name)
-	v.MustNotBeEmpty(r.Surname)
-	v.MustNotBeEmpty(r.Email)
+	v.MustNotBeEmptyString(r.IDCardNumber)
+	v.MustNotBeEmptyString(r.Name)
+	v.MustNotBeEmptyString(r.Surname)
+	v.MustNotBeEmptyString(r.Email)
 	v.MustBeEmail(r.Email)
-	v.MustNotBeEmpty(r.Password)
-	v.MustNotBeEmpty(r.Role)
+	v.MustNotBeEmptyString(r.Password)
+	v.MustNotBeEmptyString(r.Role)
 
 	return v.AppErr
 }
@@ -40,9 +40,9 @@ type UserLoginRequest struct {
 func (r *UserLoginRequest) Validate() *domain.AppError {
 	v := new(utils.Validator)
 
-	v.MustNotBeEmpty(r.Email)
+	v.MustNotBeEmptyString(r.Email)
 	v.MustBeEmail(r.Email)
-	v.MustNotBeEmpty(r.Password)
+	v.MustNotBeEmptyString(r.Password)
 
 	return v.AppErr
 }
