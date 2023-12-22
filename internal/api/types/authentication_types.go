@@ -1,22 +1,49 @@
 package types
 
-import "time"
+import (
+	"ppugenrollment/internal/domain"
+	"time"
+)
 
 type UserRegisterRequest struct {
-	IDCardNumber string    `json:"id_card_number" validate:"required"`
-	Name         string    `json:"name" validate:"required"`
-	Surname      string    `json:"surname" validate:"required"`
-	Email        string    `json:"email" validate:"required,email"`
-	Password     string    `json:"password" validate:"required"`
-	Role         string    `json:"role" validate:"required"`
+	IDCardNumber string    `json:"id_card_number"`
+	Name         string    `json:"name"`
+	Surname      string    `json:"surname"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	Role         string    `json:"role"`
 	DateOfBirth  time.Time `json:"date_of_birth"`
 	IsAGraduate  bool      `json:"is_a_graduate"`
 	Level        int       `json:"level"`
 }
 
+func (r *UserRegisterRequest) Validate() *domain.AppError {
+	v := new(Validator)
+
+	v.MustNotBeEmpty(r.IDCardNumber)
+	v.MustNotBeEmpty(r.Name)
+	v.MustNotBeEmpty(r.Surname)
+	v.MustNotBeEmpty(r.Email)
+	v.MustBeEmail(r.Email)
+	v.MustNotBeEmpty(r.Password)
+	v.MustNotBeEmpty(r.Role)
+
+	return v.appErr
+}
+
 type UserLoginRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (r *UserLoginRequest) Validate() *domain.AppError {
+	v := new(Validator)
+
+	v.MustNotBeEmpty(r.Email)
+	v.MustBeEmail(r.Email)
+	v.MustNotBeEmpty(r.Password)
+
+	return v.appErr
 }
 
 type UserResponse struct {

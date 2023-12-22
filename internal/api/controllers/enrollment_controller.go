@@ -20,7 +20,7 @@ func EnrollmentRoutes(g *echo.Group) func(enroller ports.Enroller) {
 // an echo.HandlerFunc that can be used as a handler for HTTP requests
 func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var request types.EnrollmentApplicationRequest
+		request := new(types.EnrollmentApplicationRequest)
 
 		if err := c.Bind(&request); err != nil {
 			slog.Error(err.Error())
@@ -29,12 +29,12 @@ func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
 
 		enrolledBy := c.Get("UserID").(int)
 
-		if err := validateStruct(request); err != nil {
-			slog.Error(err.Error())
-			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		if appErr := request.Validate(); appErr != nil {
+			slog.Error(appErr.Error())
+			return sendError(http.StatusBadRequest, appErr)
 		}
 
-		enrollmentApplication := mappers.FromRequestToApplication(&request)
+		enrollmentApplication := mappers.FromRequestToApplication(request)
 		application, appErr := enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
 
 		if appErr != nil {

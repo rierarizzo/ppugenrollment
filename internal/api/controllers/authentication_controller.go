@@ -20,19 +20,19 @@ func AuthRoutes(g *echo.Group) func(userAuth auth.Authenticator) {
 // register is a function that registers a new user
 func register(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var request types.UserRegisterRequest
+		request := new(types.UserRegisterRequest)
 
 		if err := c.Bind(&request); err != nil {
 			slog.Error(err.Error())
 			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
-		if err := validateStruct(request); err != nil {
-			slog.Error(err.Error())
-			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		if appErr := request.Validate(); appErr != nil {
+			slog.Error(appErr.Error())
+			return sendError(http.StatusBadRequest, appErr)
 		}
 
-		user := mappers.FromRegisterRequestToUser(&request)
+		user := mappers.FromRegisterRequestToUser(request)
 		appErr := userAuth.Register(&user)
 
 		if appErr != nil {
@@ -46,16 +46,16 @@ func register(userAuth auth.Authenticator) echo.HandlerFunc {
 // login is a function that logs in a user
 func login(userAuth auth.Authenticator) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var request types.UserLoginRequest
+		request := new(types.UserLoginRequest)
 
 		if err := c.Bind(&request); err != nil {
 			slog.Error(err.Error())
 			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 		}
 
-		if err := validateStruct(request); err != nil {
-			slog.Error(err.Error())
-			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		if appErr := request.Validate(); appErr != nil {
+			slog.Error(appErr.Error())
+			return sendError(http.StatusBadRequest, appErr)
 		}
 
 		authPayload, appErr := userAuth.Login(request.Email, request.Password)

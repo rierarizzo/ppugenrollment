@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"ppugenrollment/internal/domain"
 )
@@ -40,10 +39,4 @@ func sendOK(c echo.Context, statusCode int, msg string, response any) error {
 	}
 
 	return c.JSON(statusCode, payload)
-}
-
-// validateStruct is a function that validates a struct using a new validator
-func validateStruct(s interface{}) error {
-	validate := validator.New()
-	return validate.Struct(s)
 }

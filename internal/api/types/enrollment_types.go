@@ -1,8 +1,19 @@
 package types
 
+import "ppugenrollment/internal/domain"
+
 type EnrollmentApplicationRequest struct {
-	Project  int `json:"project" validate:"required"`
-	Schedule int `json:"schedule" validate:"required"`
+	Project  int `json:"project"`
+	Schedule int `json:"schedule"`
+}
+
+func (r *EnrollmentApplicationRequest) Validate() *domain.AppError {
+	v := new(Validator)
+
+	v.MustNotBeZero(r.Project)
+	v.MustNotBeZero(r.Schedule)
+
+	return v.appErr
 }
 
 type EnrollmentApplicationResponse struct {
