@@ -1,4 +1,4 @@
-package types
+package utils
 
 import (
 	"fmt"
@@ -7,17 +7,17 @@ import (
 )
 
 type Validator struct {
-	appErr *domain.AppError
+	AppErr *domain.AppError
 }
 
 func (v *Validator) MustBeGreaterThan(high, value int) bool {
-	if v.appErr != nil {
+	if v.AppErr != nil {
 		return false
 	}
 
 	if value <= high {
-		v.appErr.Type = domain.BadRequestError
-		v.appErr.Err = fmt.Errorf("must be greater than %d", high)
+		v.AppErr.Type = domain.BadRequestError
+		v.AppErr.Err = fmt.Errorf("must be greater than %d", high)
 
 		return false
 	}
@@ -26,13 +26,13 @@ func (v *Validator) MustBeGreaterThan(high, value int) bool {
 }
 
 func (v *Validator) MustNotBeEmpty(value string) bool {
-	if v.appErr != nil {
+	if v.AppErr != nil {
 		return false
 	}
 
 	if value == "" {
-		v.appErr.Type = domain.BadRequestError
-		v.appErr.Err = fmt.Errorf("must not be empty")
+		v.AppErr.Type = domain.BadRequestError
+		v.AppErr.Err = fmt.Errorf("must not be empty")
 
 		return false
 	}
@@ -41,13 +41,13 @@ func (v *Validator) MustNotBeEmpty(value string) bool {
 }
 
 func (v *Validator) MustNotBeZero(value int) bool {
-	if v.appErr != nil {
+	if v.AppErr != nil {
 		return false
 	}
 
 	if value == 0 {
-		v.appErr.Type = domain.BadRequestError
-		v.appErr.Err = fmt.Errorf("must not be zero")
+		v.AppErr.Type = domain.BadRequestError
+		v.AppErr.Err = fmt.Errorf("must not be zero")
 
 		return false
 	}
@@ -56,7 +56,7 @@ func (v *Validator) MustNotBeZero(value int) bool {
 }
 
 func (v *Validator) MustBeEmail(value string) bool {
-	if v.appErr != nil {
+	if v.AppErr != nil {
 		return false
 	}
 
@@ -65,8 +65,8 @@ func (v *Validator) MustBeEmail(value string) bool {
 	re := regexp.MustCompile(regex)
 
 	if !re.MatchString(value) {
-		v.appErr.Type = domain.BadRequestError
-		v.appErr.Err = fmt.Errorf("must be a valid email")
+		v.AppErr.Type = domain.BadRequestError
+		v.AppErr.Err = fmt.Errorf("must be a valid email")
 
 		return false
 	}

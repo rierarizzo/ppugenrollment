@@ -13,7 +13,7 @@ import (
 
 var RoutesAllowedByRoles map[string][]string
 
-func Verify(next echo.HandlerFunc) echo.HandlerFunc {
+func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Validate JWT
 		tokenWithBearer := c.Request().Header.Get("Authorization")

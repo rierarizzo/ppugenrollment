@@ -1,6 +1,9 @@
 package types
 
-import "ppugenrollment/internal/domain"
+import (
+	"ppugenrollment/internal/api/utils"
+	"ppugenrollment/internal/domain"
+)
 
 type EnrollmentApplicationRequest struct {
 	Project  int `json:"project"`
@@ -8,12 +11,12 @@ type EnrollmentApplicationRequest struct {
 }
 
 func (r *EnrollmentApplicationRequest) Validate() *domain.AppError {
-	v := new(Validator)
+	v := new(utils.Validator)
 
 	v.MustNotBeZero(r.Project)
 	v.MustNotBeZero(r.Schedule)
 
-	return v.appErr
+	return v.AppErr
 }
 
 type EnrollmentApplicationResponse struct {

@@ -6,43 +6,43 @@ import (
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
 	"ppugenrollment/internal/api/types"
+	"ppugenrollment/internal/api/utils"
 	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
 )
 
-func EnrollmentRoutes(g *echo.Group) func(enroller ports.Enroller) {
-	return func(enroller ports.Enroller) {
-		g.POST("/enrollToProject", enrollToProject(enroller))
-	}
+type EnrollmentController struct {
+	enroller ports.Enroller
 }
 
-// enrollToProject is a function that handles the enrollment of a student to a project. It takes an enroller and returns
-// an echo.HandlerFunc that can be used as a handler for HTTP requests
-func enrollToProject(enroller ports.Enroller) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		request := new(types.EnrollmentApplicationRequest)
+func NewEnrollmentController(enroller ports.Enroller) *EnrollmentController {
+	return &EnrollmentController{enroller}
+}
 
-		if err := c.Bind(&request); err != nil {
-			slog.Error(err.Error())
-			return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
-		}
+func (ec *EnrollmentController) EnrollToProject(c echo.Context) error {
+	request := new(types.EnrollmentApplicationRequest)
 
-		enrolledBy := c.Get("UserID").(int)
-
-		if appErr := request.Validate(); appErr != nil {
-			slog.Error(appErr.Error())
-			return sendError(http.StatusBadRequest, appErr)
-		}
-
-		enrollmentApplication := mappers.FromRequestToApplication(request)
-		application, appErr := enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
-
-		if appErr != nil {
-			return sendError(http.StatusInternalServerError, appErr)
-		}
-
-		response := mappers.FromApplicationToResponse(application)
-
-		return sendOK(c, http.StatusAccepted, "Enrollment applied", response)
+	if err := c.Bind(&request); err != nil {
+		slog.Error(err.Error())
+		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
+
+	enrolledBy := c.Get("UserID").(int)
+
+	if appErr := request.Validate(); appErr != nil {
+		slog.Error(appErr.Error())
+		return utils.SendError(http.StatusBadRequest, appErr)
+	}
+
+	enrollmentApplication := mappers.FromRequestToApplication(request)
+	application, appErr := ec.enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
+
+	if appErr != nil {
+		return utils.SendError(http.StatusInternalServerError, appErr)
+	}
+
+	response := mappers.FromApplicationToResponse(application)
+
+	return utils.SendOK(c, http.StatusAccepted, "Enrollment applied", response)
+
 }

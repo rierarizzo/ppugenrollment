@@ -14,7 +14,7 @@ func NewProjectManager(projectRepo ports.ProjectRepository) *DefaultManager {
 	return &DefaultManager{projectRepo}
 }
 
-func (d DefaultManager) GetAllProjects() ([]domain.Project, *domain.AppError) {
+func (d *DefaultManager) GetAllProjects() ([]domain.Project, *domain.AppError) {
 	projects, appErr := d.projectRepo.SelectAllProjects()
 
 	if appErr != nil {
