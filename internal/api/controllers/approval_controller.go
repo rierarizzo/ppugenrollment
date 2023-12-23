@@ -36,5 +36,4 @@ func (ac *ApprovalController) ApproveEnrollmentApplication(c echo.Context) error
 	response := mappers.FromGeneratedToResponse(generated)
 
 	return utils.SendOK(c, http.StatusAccepted, "Enrollment application approved", response)
-
 }

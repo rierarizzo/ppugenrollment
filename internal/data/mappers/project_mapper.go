@@ -15,3 +15,13 @@ func FromModelToProject(model *models.ProjectModel) domain.Project {
 		Ends:        model.Ends,
 	}
 }
+
+func FromProjectToModel(project *domain.Project) models.ProjectModel {
+	return models.ProjectModel{
+		Company:     project.Company.ID,
+		Name:        project.Name,
+		Description: project.Description,
+		Starts:      project.Starts,
+		Ends:        project.Ends,
+	}
+}

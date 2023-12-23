@@ -38,5 +38,28 @@ func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domai
 }
 
 func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*domain.Project, *domain.AppError) {
-	panic("unimplemented")
+	model := mappers.FromProjectToModel(project)
+
+	insertInProjectTable := `
+		INSERT INTO project (company, name, description, starts, ends)
+		VALUES (?,?,?,?,?)
+	`
+
+	result, err := d.db.Exec(
+		insertInProjectTable,
+		model.Company,
+		model.Name,
+		model.Description,
+		model.Starts,
+		model.Ends)
+
+	if err != nil {
+		return nil, domain.NewAppError(err, domain.RepositoryError)
+	}
+
+	lastInsertedID, _ := result.LastInsertId()
+
+	project.ID = int(lastInsertedID)
+
+	return project, nil
 }

@@ -26,5 +26,12 @@ func (d *DefaultProjectManager) GetAllProjects() ([]domain.Project, *domain.AppE
 }
 
 func (d *DefaultProjectManager) AddNewProject(project *domain.Project) (*domain.Project, *domain.AppError) {
-	panic("unimplemented")
+	projectWithID, appErr := d.projectRepo.InsertProject(project)
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return projectWithID, nil
 }

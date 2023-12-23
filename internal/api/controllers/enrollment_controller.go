@@ -44,5 +44,4 @@ func (ec *EnrollmentController) EnrollToProject(c echo.Context) error {
 	response := mappers.FromApplicationToResponse(application)
 
 	return utils.SendOK(c, http.StatusAccepted, "Enrollment applied", response)
-
 }
