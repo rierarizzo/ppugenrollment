@@ -8,7 +8,6 @@ import (
 	"ppugenrollment/internal/api/types"
 	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
-	"ppugenrollment/pkg/utils"
 )
 
 type EnrollmentController struct {
@@ -24,24 +23,24 @@ func (ec *EnrollmentController) EnrollToProject(c echo.Context) error {
 
 	if err := c.Bind(&request); err != nil {
 		slog.Error(err.Error())
-		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
 
 	enrolledBy := c.Get("UserID").(int)
 
 	if appErr := request.Validate(); appErr != nil {
 		slog.Error(appErr.Error())
-		return utils.SendError(http.StatusBadRequest, appErr)
+		return sendError(http.StatusBadRequest, appErr)
 	}
 
 	enrollmentApplication := mappers.FromRequestToApplication(request)
 	application, appErr := ec.enroller.EnrollToProject(&enrollmentApplication, enrolledBy)
 
 	if appErr != nil {
-		return utils.SendError(http.StatusInternalServerError, appErr)
+		return sendError(http.StatusInternalServerError, appErr)
 	}
 
 	response := mappers.FromApplicationToResponse(application)
 
-	return utils.SendOK(c, http.StatusAccepted, "Enrollment applied", response)
+	return sendOK(c, http.StatusAccepted, "Enrollment applied", response)
 }

@@ -8,7 +8,6 @@ import (
 	"ppugenrollment/internal/api/types"
 	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
-	"ppugenrollment/pkg/utils"
 )
 
 type ProjectController struct {
@@ -23,12 +22,12 @@ func (pc *ProjectController) GetAllProjects(c echo.Context) error {
 	projects, appErr := pc.manager.GetAllProjects()
 
 	if appErr != nil {
-		return utils.SendError(http.StatusInternalServerError, appErr)
+		return sendError(http.StatusInternalServerError, appErr)
 	}
 
 	response := mappers.FromProjectsToResponse(projects)
 
-	return utils.SendOK(c, http.StatusOK, "", response)
+	return sendOK(c, http.StatusOK, "", response)
 }
 
 func (pc *ProjectController) AddNewProject(c echo.Context) error {
@@ -36,12 +35,12 @@ func (pc *ProjectController) AddNewProject(c echo.Context) error {
 
 	if err := c.Bind(&request); err != nil {
 		slog.Error(err.Error())
-		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
 
 	if appErr := request.Validate(); appErr != nil {
 		slog.Error(appErr.Error())
-		return utils.SendError(http.StatusBadRequest, appErr)
+		return sendError(http.StatusBadRequest, appErr)
 	}
 
 	project := mappers.FromRequestToProject(request)
@@ -49,10 +48,10 @@ func (pc *ProjectController) AddNewProject(c echo.Context) error {
 	projectWithID, appErr := pc.manager.AddNewProject(&project)
 
 	if appErr != nil {
-		return utils.SendError(http.StatusInternalServerError, appErr)
+		return sendError(http.StatusInternalServerError, appErr)
 	}
 
 	response := mappers.FromProjectToResponse(projectWithID)
 
-	return utils.SendOK(c, http.StatusAccepted, "New project created", response)
+	return sendOK(c, http.StatusAccepted, "New project created", response)
 }

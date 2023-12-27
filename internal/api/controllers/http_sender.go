@@ -1,4 +1,4 @@
-package utils
+package controllers
 
 import (
 	"github.com/labstack/echo/v4"
@@ -11,7 +11,7 @@ type errorResponse struct {
 	ErrorMsg   string `json:"error_msg"`
 }
 
-func SendError(statusCode int, appErr *domain.AppError) error {
+func sendError(statusCode int, appErr *domain.AppError) error {
 	payload := errorResponse{
 		StatusCode: statusCode,
 		ErrorType:  appErr.Type,
@@ -27,7 +27,7 @@ type okResponse struct {
 	Data       any    `json:"data,omitempty"`
 }
 
-func SendOK(c echo.Context, statusCode int, msg string, response any) error {
+func sendOK(c echo.Context, statusCode int, msg string, response any) error {
 	if msg == "" {
 		msg = "Ok"
 	}

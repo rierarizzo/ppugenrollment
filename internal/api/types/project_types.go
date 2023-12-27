@@ -2,7 +2,6 @@ package types
 
 import (
 	"ppugenrollment/internal/domain"
-	"ppugenrollment/pkg/utils"
 	"time"
 )
 
@@ -16,7 +15,7 @@ type ProjectRequest struct {
 }
 
 func (r *ProjectRequest) Validate() *domain.AppError {
-	v := new(utils.Validator)
+	v := new(Validator)
 
 	v.MustNotBeZero(r.Company)
 	v.MustNotBeEmptyString(r.Name)

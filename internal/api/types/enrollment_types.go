@@ -2,7 +2,6 @@ package types
 
 import (
 	"ppugenrollment/internal/domain"
-	"ppugenrollment/pkg/utils"
 )
 
 type EnrollmentApplicationRequest struct {
@@ -11,7 +10,7 @@ type EnrollmentApplicationRequest struct {
 }
 
 func (r *EnrollmentApplicationRequest) Validate() *domain.AppError {
-	v := new(utils.Validator)
+	v := new(Validator)
 
 	v.MustNotBeZero(r.Project)
 	v.MustNotBeZero(r.Schedule)
