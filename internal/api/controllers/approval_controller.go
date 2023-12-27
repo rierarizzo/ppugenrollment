@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
-	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
+	"ppugenrollment/pkg/domain"
 	"strconv"
 )
 

@@ -2,7 +2,7 @@ package mappers
 
 import (
 	"ppugenrollment/internal/data/models"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 func FromModelToUser(fields *models.UserModel) domain.User {

@@ -1,6 +1,6 @@
 package ports
 
-import "ppugenrollment/internal/domain"
+import "ppugenrollment/pkg/domain"
 
 type ProjectManager interface {
 	GetAllProjects() ([]domain.Project, *domain.AppError)

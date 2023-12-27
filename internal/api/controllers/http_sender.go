@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/labstack/echo/v4"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 type errorResponse struct {

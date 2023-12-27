@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"ppugenrollment/internal/data/mappers"
 	"ppugenrollment/internal/data/models"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 type DefaultApprovalRepository struct {

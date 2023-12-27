@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
 	"ppugenrollment/internal/api/types"
-	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
+	"ppugenrollment/pkg/domain"
 )
 
 type EnrollmentController struct {

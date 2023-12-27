@@ -3,9 +3,9 @@ package usecases
 import (
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
-	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
-	"ppugenrollment/internal/security"
+	"ppugenrollment/pkg/domain"
+	"ppugenrollment/pkg/security"
 )
 
 type DefaultUserAuthenticator struct {

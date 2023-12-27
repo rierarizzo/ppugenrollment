@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"log/slog"
 	"os"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 	"time"
 )
 
@@ -14,19 +14,20 @@ const SecretKey = "SECRET_KEY"
 func CreateJWTToken(user domain.User) (string, *domain.AppError) {
 	secret := []byte(os.Getenv(SecretKey))
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &UserClaims{
-		Id:    user.ID,
-		Email: user.Email,
-		Role:  user.Role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt: &jwt.NumericDate{
-				Time: time.Now(),
+	token := jwt.NewWithClaims(
+		jwt.SigningMethodHS256, &UserClaims{
+			Id:    user.ID,
+			Email: user.Email,
+			Role:  user.Role,
+			RegisteredClaims: jwt.RegisteredClaims{
+				IssuedAt: &jwt.NumericDate{
+					Time: time.Now(),
+				},
+				ExpiresAt: &jwt.NumericDate{
+					Time: time.Now().Add(time.Hour),
+				},
 			},
-			ExpiresAt: &jwt.NumericDate{
-				Time: time.Now().Add(time.Hour),
-			},
-		},
-	})
+		})
 
 	tokenString, err := token.SignedString(secret)
 	if err != nil {
@@ -40,13 +41,14 @@ func VerifyJWTToken(tokenString string) (*UserClaims, error) {
 	secret := []byte(os.Getenv(SecretKey))
 
 	var userClaims UserClaims
-	token, err := jwt.ParseWithClaims(tokenString, &userClaims, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, domain.NewAppErrorWithType(domain.TokenValidationError)
-		}
+	token, err := jwt.ParseWithClaims(
+		tokenString, &userClaims, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, domain.NewAppErrorWithType(domain.TokenValidationError)
+			}
 
-		return secret, nil
-	})
+			return secret, nil
+		})
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			slog.Error("Token is expired")

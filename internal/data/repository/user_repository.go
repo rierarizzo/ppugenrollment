@@ -3,12 +3,11 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"github.com/jmoiron/sqlx"
 	"log/slog"
 	"ppugenrollment/internal/data/mappers"
 	"ppugenrollment/internal/data/models"
-	"ppugenrollment/internal/domain"
-
-	"github.com/jmoiron/sqlx"
+	"ppugenrollment/pkg/domain"
 )
 
 type DefaultUserRepository struct {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"ppugenrollment/internal/domain"
-	"ppugenrollment/internal/security"
+	"ppugenrollment/pkg/domain"
+	"ppugenrollment/pkg/security"
 	"strings"
 
 	"github.com/labstack/echo/v4"

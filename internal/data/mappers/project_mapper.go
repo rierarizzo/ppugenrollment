@@ -2,7 +2,7 @@ package mappers
 
 import (
 	"ppugenrollment/internal/data/models"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 func FromModelToProject(model *models.ProjectModel) domain.Project {

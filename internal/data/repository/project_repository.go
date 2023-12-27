@@ -4,7 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"ppugenrollment/internal/data/mappers"
 	"ppugenrollment/internal/data/models"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 type DefaultProjectRepository struct {

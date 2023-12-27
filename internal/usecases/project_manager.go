@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"log/slog"
-	"ppugenrollment/internal/domain"
 	"ppugenrollment/internal/ports"
+	"ppugenrollment/pkg/domain"
 )
 
 type DefaultProjectManager struct {

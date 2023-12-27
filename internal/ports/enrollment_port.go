@@ -1,6 +1,6 @@
 package ports
 
-import "ppugenrollment/internal/domain"
+import "ppugenrollment/pkg/domain"
 
 type ProjectEnroller interface {
 	EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (

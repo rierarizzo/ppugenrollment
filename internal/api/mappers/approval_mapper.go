@@ -2,7 +2,7 @@ package mappers
 
 import (
 	"ppugenrollment/internal/api/types"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 func FromGeneratedToResponse(generated *domain.EnrollmentGenerated) types.EnrollmentGeneratedResponse {

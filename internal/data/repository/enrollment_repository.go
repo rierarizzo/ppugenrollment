@@ -3,7 +3,7 @@ package repository
 import (
 	"github.com/jmoiron/sqlx"
 	"ppugenrollment/internal/data/mappers"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 )
 
 type DefaultEnrollmentRepository struct {

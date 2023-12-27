@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-	"ppugenrollment/internal/domain"
+	"ppugenrollment/pkg/domain"
 	"regexp"
 )
 
