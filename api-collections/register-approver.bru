@@ -1,0 +1,22 @@
+meta {
+  name: register-approver
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/authentication/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id_card_number": "0955732663",
+      "name": "Camila",
+      "surname": "Lucas",
+      "email": "camilalucas@gmail.com",
+      "password": "elaguaesrica10",
+      "role": "A"
+  }
+}

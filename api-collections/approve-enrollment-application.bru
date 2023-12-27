@@ -1,0 +1,15 @@
+meta {
+  name: approve-enrollment-application
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/approval/approveEnrollmentApplication/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJjYW1pbGFsdWNhc0BnbWFpbC5jb20iLCJyb2xlIjoiQSIsImV4cCI6MTcwMjE4MDE4MiwiaWF0IjoxNzAyMTc2NTgyfQ.asm9Gl46kai1TwU07G8x5dcXtO_2XZJlB2e4-utfYLA
+}

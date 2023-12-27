@@ -1,0 +1,22 @@
+meta {
+  name: register-admin
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/authentication/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id_card_number": "0955731232",
+      "name": "Maylin",
+      "surname": "Riera",
+      "email": "maylinriera@gmail.com",
+      "password": "elaguaesrica10",
+      "role": "M"
+  }
+}

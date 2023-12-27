@@ -1,0 +1,22 @@
+meta {
+  name: get-projects
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8080/project/getAllProjects
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJrZW5ldGhyaWVyYUBnbWFpbC5jb20iLCJyb2xlIjoiUyIsImV4cCI6MTcwMjA5ODc2NCwiaWF0IjoxNzAyMDk1MTY0fQ.u7dnRPsW9BRKsLMcTOYCCws1mWtHxkotvvydKt5Rz_M
+}
+
+body:json {
+  {
+      "email": "kenethrierar@gmail.com",
+      "password": "elaguaesrica10"
+  }
+}
