@@ -38,7 +38,7 @@ func (a *DefaultUserAuthenticator) Login(email, password string) (*domain.AuthUs
 		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
 	}
 
-	if err := decryptUserPassword(user.Password, password); err != nil {
+	if appErr := decryptUserPassword(user.Password, password); appErr != nil {
 		slog.Error(appErr.Error())
 		return nil, domain.NewAppErrorWithType(domain.NotAuthenticatedError)
 	}

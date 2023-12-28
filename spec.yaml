@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: PP UG Enrollment
+  description: PP UG Enrollment
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:80'
+paths:
+  /authentication/login:
+    post:
+      operationId: authentication
+      description: Se autentica al sistema
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: lorem.ipsum@example.com
+                password:
+                  type: string
+      responses:
+        201:
+          description: El usuario se autenticó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+
+components:
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 0
+        name:
+          type: string
+          example: Lorem
+        surname:
+          type: string
+          example: Ipsum
+        email:
+          type: string
+          example: lorem.ipsum@example.com
+        role:
+          type: string
+          example: S
+        authentication_result:
+          $ref: "#/components/schemas/AuthenticationResult"
+
+    AuthenticationResult:
+      type: object
+      properties:
+        access_token:
+          type: string
