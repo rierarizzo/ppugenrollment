@@ -8,6 +8,7 @@ import (
 	"ppugenrollment/internal/data/mappers"
 	"ppugenrollment/internal/data/models"
 	"ppugenrollment/pkg/domain"
+	"time"
 )
 
 type DefaultUserRepository struct {
@@ -20,6 +21,9 @@ func NewUserRepository(db *sqlx.DB) *DefaultUserRepository {
 
 func (r *DefaultUserRepository) InsertUser(user *domain.User) *domain.AppError {
 	model := mappers.FromUserToModel(user)
+
+	// Omitir fecha de nacimiento para evitar error en frontend
+	user.DateOfBirth = time.Now()
 
 	insertInUserSchema := `
 		INSERT INTO user (id_card_number, name, surname, email, password, role, date_of_birth, is_a_graduate, level) 
