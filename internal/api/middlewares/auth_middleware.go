@@ -17,6 +17,7 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Validate JWT
 		tokenWithBearer := c.Request().Header.Get("Authorization")
+
 		if tokenWithBearer == "" {
 			slog.Error("Token is empty")
 			return c.JSON(http.StatusForbidden, domain.NewAppError("Token is empty", domain.TokenValidationError))
@@ -25,6 +26,7 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 		token, _ := strings.CutPrefix(tokenWithBearer, "Bearer ")
 
 		claims, err := security.VerifyJWTToken(token)
+
 		if err != nil {
 			slog.Error(err.Error())
 			return c.JSON(http.StatusForbidden, domain.NewAppError(err.Error(), domain.TokenValidationError))
@@ -57,6 +59,7 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		slog.Error(fmt.Sprintf("Role %s not authorized", claims.Role))
+
 		return c.JSON(http.StatusUnauthorized, domain.NewAppErrorWithType(domain.NotAuthorizedError))
 	}
 }
