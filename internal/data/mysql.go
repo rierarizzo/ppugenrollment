@@ -7,11 +7,13 @@ import (
 
 func ConnectToMySQL(dsn string) *sqlx.DB {
 	db, err := sqlx.Open("mysql", dsn)
+
 	if err != nil {
 		panic(err)
 	}
 
 	err = db.Ping()
+
 	if err != nil {
 		panic(err)
 	}

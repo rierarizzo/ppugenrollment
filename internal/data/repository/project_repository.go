@@ -45,12 +45,7 @@ func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*doma
 		VALUES (?,?,?,?,?)
 	`
 
-	result, err := d.db.Exec(
-		insertInProjectTable,
-		model.Company,
-		model.Name,
-		model.Description,
-		model.Starts,
+	result, err := d.db.Exec(insertInProjectTable, model.Company, model.Name, model.Description, model.Starts,
 		model.Ends)
 
 	if err != nil {

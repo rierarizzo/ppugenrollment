@@ -14,9 +14,8 @@ func NewProjectEnroller(enrollmentRepo ports.EnrollmentRepository) *DefaultProje
 	return &DefaultProjectEnroller{enrollmentRepo}
 }
 
-func (p *DefaultProjectEnroller) EnrollToProject(application *domain.EnrollmentApplication, enrolledBy int) (
-	*domain.EnrollmentApplication,
-	*domain.AppError) {
+func (p *DefaultProjectEnroller) EnrollToProject(application *domain.EnrollmentApplication,
+	enrolledBy int) (*domain.EnrollmentApplication, *domain.AppError) {
 	application.Student = domain.User{ID: enrolledBy}
 
 	lastID, appErr := p.enrollmentRepo.InsertEnrollment(application)

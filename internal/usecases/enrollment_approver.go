@@ -14,10 +14,7 @@ func NewEnrollmentApprover(approvalRepo ports.ApprovalRepository) *DefaultEnroll
 	return &DefaultEnrollmentApprover{approvalRepo}
 }
 
-// ApproveEnrollmentApplication approves an enrollment application with the given application ID by the specified approver ID.
-// It returns the approved enrollment generated data and any error that occurred during the approval process.
-func (d *DefaultEnrollmentApprover) ApproveEnrollmentApplication(applicationID, approvedBy int) (
-	*domain.EnrollmentGenerated,
+func (d *DefaultEnrollmentApprover) ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated,
 	*domain.AppError) {
 	generated, appErr := d.approvalRepo.InsertEnrollmentApproval(applicationID, approvedBy)
 

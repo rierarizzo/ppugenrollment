@@ -16,8 +16,7 @@ func NewApprovalRepository(db *sqlx.DB) *DefaultApprovalRepository {
 	return &DefaultApprovalRepository{db}
 }
 
-func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, approvedBy int) (
-	*domain.EnrollmentGenerated,
+func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, approvedBy int) (*domain.EnrollmentGenerated,
 	*domain.AppError) {
 	tx, _ := d.db.Beginx()
 
@@ -25,6 +24,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 		UPDATE enrollment_application SET status='A' WHERE id=?
 	`
 	result, err := tx.Exec(updateEnrollmentApplication, applicationID)
+
 	if err != nil {
 		_ = tx.Rollback()
 		return nil, domain.NewAppError(err, domain.RepositoryError)
@@ -40,6 +40,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 		INSERT INTO enrollment_generated (enrollment_application, approved_by) VALUES (?,?)
 	`
 	result, err = tx.Exec(insertIntoEnrollmentGenerated, applicationID, approvedBy)
+
 	if err != nil {
 		_ = tx.Rollback()
 		return nil, domain.NewAppError(err, domain.RepositoryError)
@@ -74,6 +75,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 		WHERE eg.id=?
 	`
 	err = tx.Get(&generatedModel, enrollmentGeneratedQuery, generatedID)
+
 	if err != nil {
 		_ = tx.Rollback()
 		return nil, domain.NewAppError(err, domain.RepositoryError)

@@ -25,17 +25,9 @@ func (r *DefaultUserRepository) InsertUser(user *domain.User) *domain.AppError {
 		INSERT INTO user (id_card_number, name, surname, email, password, role, date_of_birth, is_a_graduate, level) 
 		VALUES (?,?,?,?,?,?,?,?,?)
 	`
-	_, err := r.db.Exec(
-		insertInUserSchema,
-		model.IDCardNumber,
-		model.Name,
-		model.Surname,
-		model.Email,
-		model.Password,
-		model.Role,
-		model.DateOfBirth,
-		model.IsAGraduate,
-		model.Level)
+	_, err := r.db.Exec(insertInUserSchema, model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password,
+		model.Role, model.DateOfBirth, model.IsAGraduate, model.Level)
+
 	if err != nil {
 		slog.Error(err.Error())
 		return domain.NewAppError(err, domain.RepositoryError)
@@ -51,6 +43,7 @@ func (r *DefaultUserRepository) SelectUserByEmail(email string) (*domain.User, *
 		SELECT * FROM user WHERE email=?
 	`
 	err := r.db.Get(&model, selectInUserSchema, email)
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.NewAppError(err, domain.NotFoundError)
