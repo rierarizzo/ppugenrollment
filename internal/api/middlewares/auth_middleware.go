@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"ppugenrollment/pkg/domain"
 	"ppugenrollment/pkg/security"
+	"ppugenrollment/pkg/utils"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -20,7 +21,8 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if tokenWithBearer == "" {
 			slog.Error("Token is empty")
-			return c.JSON(http.StatusForbidden, domain.NewAppError("Token is empty", domain.TokenValidationError))
+			return utils.SendError(http.StatusForbidden,
+				domain.NewAppError("Token is empty", domain.TokenValidationError))
 		}
 
 		token, _ := strings.CutPrefix(tokenWithBearer, "Bearer ")
@@ -29,7 +31,7 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if err != nil {
 			slog.Error(err.Error())
-			return c.JSON(http.StatusForbidden, domain.NewAppError(err.Error(), domain.TokenValidationError))
+			return utils.SendError(http.StatusForbidden, domain.NewAppErrorWithType(domain.TokenValidationError))
 		}
 
 		c.Set("UserID", claims.Id)
@@ -60,6 +62,6 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 
 		slog.Error(fmt.Sprintf("Role %s not authorized", claims.Role))
 
-		return c.JSON(http.StatusUnauthorized, domain.NewAppErrorWithType(domain.NotAuthorizedError))
+		return utils.SendError(http.StatusUnauthorized, domain.NewAppErrorWithType(domain.NotAuthorizedError))
 	}
 }

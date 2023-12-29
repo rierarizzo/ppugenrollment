@@ -8,6 +8,7 @@ import (
 	"ppugenrollment/internal/api/types"
 	"ppugenrollment/internal/ports"
 	"ppugenrollment/pkg/domain"
+	"ppugenrollment/pkg/utils"
 )
 
 type AuthController struct {
@@ -23,22 +24,22 @@ func (ac *AuthController) Register(c echo.Context) error {
 
 	if err := c.Bind(&request); err != nil {
 		slog.Error(err.Error())
-		return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
 
 	if appErr := request.Validate(); appErr != nil {
 		slog.Error(appErr.Error())
-		return sendError(http.StatusBadRequest, appErr)
+		return utils.SendError(http.StatusBadRequest, appErr)
 	}
 
 	user := mappers.FromRegisterRequestToUser(request)
 	appErr := ac.userAuth.Register(&user)
 
 	if appErr != nil {
-		return sendError(http.StatusInternalServerError, appErr)
+		return utils.SendError(http.StatusInternalServerError, appErr)
 	}
 
-	return sendOK(c, http.StatusCreated, "User registered", nil)
+	return utils.SendOK(c, http.StatusCreated, "User registered", nil)
 }
 
 func (ac *AuthController) Login(c echo.Context) error {
@@ -46,21 +47,21 @@ func (ac *AuthController) Login(c echo.Context) error {
 
 	if err := c.Bind(&request); err != nil {
 		slog.Error(err.Error())
-		return sendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
 
 	if appErr := request.Validate(); appErr != nil {
 		slog.Error(appErr.Error())
-		return sendError(http.StatusBadRequest, appErr)
+		return utils.SendError(http.StatusBadRequest, appErr)
 	}
 
 	authPayload, appErr := ac.userAuth.Login(request.Email, request.Password)
 
 	if appErr != nil {
-		return sendError(http.StatusUnauthorized, appErr)
+		return utils.SendError(http.StatusUnauthorized, appErr)
 	}
 
 	response := mappers.FromAuthPayloadToResponse(authPayload)
 
-	return sendOK(c, http.StatusAccepted, "User logged", response)
+	return utils.SendOK(c, http.StatusAccepted, "User logged", response)
 }
