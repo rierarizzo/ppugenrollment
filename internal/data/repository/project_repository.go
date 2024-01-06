@@ -30,8 +30,15 @@ func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domai
 		return projects, nil
 	}
 
-	for _, v := range projectsModel {
-		projects = append(projects, fromModelToProject(&v))
+	for _, model := range projectsModel {
+		projects = append(projects, domain.Project{
+			ID:          int(model.ID),
+			Company:     domain.Company{ID: int(model.Company)},
+			Name:        model.Name,
+			Description: model.Description,
+			Starts:      model.Starts,
+			Ends:        model.Ends,
+		})
 	}
 
 	return projects, nil
@@ -56,15 +63,4 @@ func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*doma
 	project.ID = int(lastInsertedID)
 
 	return project, nil
-}
-
-func fromModelToProject(model *sqlcgen.Project) domain.Project {
-	return domain.Project{
-		ID:          int(model.ID),
-		Company:     domain.Company{ID: int(model.Company)},
-		Name:        model.Name,
-		Description: model.Description,
-		Starts:      model.Starts,
-		Ends:        model.Ends,
-	}
 }
