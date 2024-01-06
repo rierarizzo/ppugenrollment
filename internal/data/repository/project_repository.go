@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"github.com/jmoiron/sqlx"
-	"ppugenrollment/internal/data/mappers"
 	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
@@ -32,7 +31,7 @@ func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domai
 	}
 
 	for _, v := range projectsModel {
-		projects = append(projects, mappers.FromModelToProject(&v))
+		projects = append(projects, fromModelToProject(&v))
 	}
 
 	return projects, nil
@@ -57,4 +56,15 @@ func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*doma
 	project.ID = int(lastInsertedID)
 
 	return project, nil
+}
+
+func fromModelToProject(model *sqlcgen.Project) domain.Project {
+	return domain.Project{
+		ID:          int(model.ID),
+		Company:     domain.Company{ID: int(model.Company)},
+		Name:        model.Name,
+		Description: model.Description,
+		Starts:      model.Starts,
+		Ends:        model.Ends,
+	}
 }
