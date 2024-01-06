@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"context"
 	"github.com/jmoiron/sqlx"
 	"ppugenrollment/internal/data/mappers"
-	"ppugenrollment/internal/data/models"
+	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
 
@@ -16,9 +17,9 @@ func NewProjectRepository(db *sqlx.DB) *DefaultProjectRepository {
 }
 
 func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domain.AppError) {
-	var projectsModel []models.ProjectModel
+	queries := sqlcgen.New(d.db)
 
-	err := d.db.Select(&projectsModel, "SELECT * FROM project")
+	projectsModel, err := queries.GetProjects(context.Background())
 
 	if err != nil {
 		return nil, domain.NewAppError(err, domain.RepositoryError)
@@ -38,22 +39,21 @@ func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domai
 }
 
 func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*domain.Project, *domain.AppError) {
-	model := mappers.FromProjectToModel(project)
+	queries := sqlcgen.New(d.db)
 
-	insertInProjectTable := `
-		INSERT INTO project (company, name, description, starts, ends)
-		VALUES (?,?,?,?,?)
-	`
-
-	result, err := d.db.Exec(insertInProjectTable, model.Company, model.Name, model.Description, model.Starts,
-		model.Ends)
+	result, err := queries.CreateProject(context.Background(), sqlcgen.CreateProjectParams{
+		Company:     int32(project.Company.ID),
+		Name:        project.Name,
+		Description: project.Description,
+		Starts:      project.Starts,
+		Ends:        project.Ends,
+	})
 
 	if err != nil {
 		return nil, domain.NewAppError(err, domain.RepositoryError)
 	}
 
 	lastInsertedID, _ := result.LastInsertId()
-
 	project.ID = int(lastInsertedID)
 
 	return project, nil
