@@ -1,3 +1,5 @@
+use ppugenrollment;
+
 create table user_role
 (
     code        char        not null,
@@ -14,9 +16,9 @@ create table user
     email          varchar(50)  not null,
     password       varchar(300) not null,
     role           char         not null,
-    date_of_birth  date,
-    is_a_graduate  boolean default false,
-    level          int     default 0,
+    date_of_birth date,
+    is_a_graduate boolean default false,
+    level         int default 0,
     primary key (id),
     foreign key (role) references user_role (code)
 );
@@ -66,7 +68,7 @@ create table enrollment_application
     project    int  not null,
     schedule   int  not null,
     applied_on datetime      default now(),
-    status     char not null default 'P',
+    status     char not null default 'P', # P: Pendiente, A: Approved
     primary key (id),
     foreign key (student) references user (id),
     foreign key (project) references project (id),

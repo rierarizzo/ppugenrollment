@@ -1,14 +1,13 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"github.com/jmoiron/sqlx"
 	"log/slog"
-	"ppugenrollment/internal/data/mappers"
-	"ppugenrollment/internal/data/models"
+	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
-	"time"
 )
 
 type DefaultUserRepository struct {
@@ -20,17 +19,19 @@ func NewUserRepository(db *sqlx.DB) *DefaultUserRepository {
 }
 
 func (r *DefaultUserRepository) InsertUser(user *domain.User) *domain.AppError {
-	model := mappers.FromUserToModel(user)
+	queries := sqlcgen.New(r.db)
 
-	// Omitir fecha de nacimiento para evitar error en frontend
-	user.DateOfBirth = time.Now()
-
-	insertInUserSchema := `
-		INSERT INTO user (id_card_number, name, surname, email, password, role, date_of_birth, is_a_graduate, level) 
-		VALUES (?,?,?,?,?,?,?,?,?)
-	`
-	_, err := r.db.Exec(insertInUserSchema, model.IDCardNumber, model.Name, model.Surname, model.Email, model.Password,
-		model.Role, model.DateOfBirth, model.IsAGraduate, model.Level)
+	_, err := queries.CreateUser(context.Background(), sqlcgen.CreateUserParams{
+		IDCardNumber: user.IDCardNumber,
+		Name:         user.Name,
+		Surname:      user.Surname,
+		Email:        user.Email,
+		Password:     user.Password,
+		Role:         user.Role,
+		DateOfBirth:  sql.NullTime{Time: user.DateOfBirth},
+		IsAGraduate:  sql.NullBool{Bool: user.IsAGraduate},
+		Level:        sql.NullInt32{Int32: int32(user.Level)},
+	})
 
 	if err != nil {
 		slog.Error(err.Error())
@@ -41,12 +42,9 @@ func (r *DefaultUserRepository) InsertUser(user *domain.User) *domain.AppError {
 }
 
 func (r *DefaultUserRepository) SelectUserByEmail(email string) (*domain.User, *domain.AppError) {
-	var model models.UserModel
+	queries := sqlcgen.New(r.db)
 
-	selectInUserSchema := `
-		SELECT * FROM user WHERE email=?
-	`
-	err := r.db.Get(&model, selectInUserSchema, email)
+	userModel, err := queries.GetUserByEmail(context.Background(), email)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -56,6 +54,18 @@ func (r *DefaultUserRepository) SelectUserByEmail(email string) (*domain.User, *
 		return nil, domain.NewAppError(err, domain.RepositoryError)
 	}
 
-	user := mappers.FromModelToUser(&model)
+	user := domain.User{
+		ID:           int(userModel.ID),
+		IDCardNumber: userModel.IDCardNumber,
+		Name:         userModel.Name,
+		Surname:      userModel.Surname,
+		Email:        userModel.Email,
+		Password:     userModel.Password,
+		Role:         userModel.Role,
+		DateOfBirth:  userModel.DateOfBirth.Time,
+		IsAGraduate:  userModel.IsAGraduate.Bool,
+		Level:        int(userModel.Level.Int32),
+	}
+
 	return &user, nil
 }

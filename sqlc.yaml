@@ -1,8 +1,12 @@
 version: "2"
 sql:
   - engine: "mysql"
-    queries: "db/query.sql"
-    schema: "db/schema.sql"
+    queries:
+      - "internal/data/queries/project_queries.sql"
+      - "internal/data/queries/user_queries.sql"
+      - "internal/data/queries/enrollment_queries.sql"
+      - "internal/data/queries/approval_queries.sql"
+    schema: "db-init/01.create_schemas.sql"
     gen:
       go:
         package: "sqlcgen"
