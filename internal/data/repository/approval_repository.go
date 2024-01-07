@@ -32,8 +32,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 		err = tx.Rollback()
 
 		if !errors.Is(err, sql.ErrTxDone) {
-			slog.Error("an error occurred while rolling back the transaction")
-			slog.Error(err.Error())
+			slog.Error("an error occurred while rolling back the transaction: " + err.Error())
 		}
 	}(tx)
 
@@ -66,7 +65,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 	err = tx.Commit()
 
 	if err != nil {
-		slog.Error("an error occurred when committing the transaction")
+		slog.Error("an error occurred when committing the transaction: " + err.Error())
 		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
 	}
 
