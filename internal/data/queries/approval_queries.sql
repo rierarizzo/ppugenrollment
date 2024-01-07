@@ -1,3 +1,12 @@
+-- name: UpdateEnrollmentApplication :exec
+UPDATE enrollment_application
+SET status='A'
+WHERE id = ?;
+
+-- name: CreateEnrollmentGenerated :execresult
+INSERT INTO enrollment_generated (enrollment_application, approved_by)
+VALUES (?, ?);
+
 -- name: GetEnrollmentGenerated :one
 SELECT eg.id                     AS id,
        eg.enrollment_application AS application_id,
@@ -20,4 +29,5 @@ FROM enrollment_generated eg
          INNER JOIN project_schedule ps ON ea.schedule = ps.id
          INNER JOIN company c ON p.company = c.id
          INNER JOIN user su ON eg.approved_by = su.id
-WHERE eg.id = ? LIMIT 1;
+WHERE eg.id = ?
+LIMIT 1;

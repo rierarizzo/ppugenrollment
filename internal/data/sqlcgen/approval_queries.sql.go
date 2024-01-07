@@ -7,8 +7,23 @@ package sqlcgen
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
+
+const createEnrollmentGenerated = `-- name: CreateEnrollmentGenerated :execresult
+INSERT INTO enrollment_generated (enrollment_application, approved_by)
+VALUES (?, ?)
+`
+
+type CreateEnrollmentGeneratedParams struct {
+	EnrollmentApplication int32
+	ApprovedBy            int32
+}
+
+func (q *Queries) CreateEnrollmentGenerated(ctx context.Context, arg CreateEnrollmentGeneratedParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, createEnrollmentGenerated, arg.EnrollmentApplication, arg.ApprovedBy)
+}
 
 const getEnrollmentGenerated = `-- name: GetEnrollmentGenerated :one
 SELECT eg.id                     AS id,
@@ -32,7 +47,8 @@ FROM enrollment_generated eg
          INNER JOIN project_schedule ps ON ea.schedule = ps.id
          INNER JOIN company c ON p.company = c.id
          INNER JOIN user su ON eg.approved_by = su.id
-WHERE eg.id = ? LIMIT 1
+WHERE eg.id = ?
+LIMIT 1
 `
 
 type GetEnrollmentGeneratedRow struct {
@@ -74,4 +90,15 @@ func (q *Queries) GetEnrollmentGenerated(ctx context.Context, id int32) (GetEnro
 		&i.ApproverSurname,
 	)
 	return i, err
+}
+
+const updateEnrollmentApplication = `-- name: UpdateEnrollmentApplication :exec
+UPDATE enrollment_application
+SET status='A'
+WHERE id = ?
+`
+
+func (q *Queries) UpdateEnrollmentApplication(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, updateEnrollmentApplication, id)
+	return err
 }
