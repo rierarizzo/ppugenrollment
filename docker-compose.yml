@@ -20,7 +20,7 @@ services:
       - mysql-instance
 
   mysql-instance:
-    image: mysql:5.7
+    image: mysql:latest
     restart: unless-stopped
     command: --explicit_defaults_for_timestamp=true
     environment:
