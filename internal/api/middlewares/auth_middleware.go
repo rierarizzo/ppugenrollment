@@ -37,31 +37,41 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Set("UserID", claims.Id)
 
 		// Validate roles
-		var rolesAllowed []string
+		isValid := validateRoles(c.Path(), claims.Role)
 
-		for k, v := range RoutesAllowedByRoles {
-			if c.Path() == k {
-				rolesAllowed = v
-				break
-			}
-
-			if strings.HasPrefix(c.Path(), k) {
-				rolesAllowed = v
-			}
-		}
-
-		if rolesAllowed[0] == "ALL" {
+		if isValid {
 			return next(c)
-		}
-
-		for _, v := range rolesAllowed {
-			if claims.Role == v {
-				return next(c)
-			}
 		}
 
 		slog.Error(fmt.Sprintf("Role %s not authorized", claims.Role))
 
 		return utils.SendError(http.StatusUnauthorized, domain.NewAppErrorWithType(domain.NotAuthorizedError))
 	}
+}
+
+func validateRoles(path string, role string) bool {
+	var rolesAllowed []string
+
+	for k, v := range RoutesAllowedByRoles {
+		if path == k {
+			rolesAllowed = v
+			break
+		}
+
+		if strings.HasPrefix(path, k) {
+			rolesAllowed = v
+		}
+	}
+
+	if rolesAllowed[0] == "ALL" {
+		return true
+	}
+
+	for _, v := range rolesAllowed {
+		if role == v {
+			return true
+		}
+	}
+
+	return false
 }
