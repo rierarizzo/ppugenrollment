@@ -1,12 +1,12 @@
 package data
 
 import (
+	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 )
 
-func ConnectToMySQL(dsn string) *sqlx.DB {
-	db, err := sqlx.Open("mysql", dsn)
+func ConnectToMySQL(dsn string) *sql.DB {
+	db, err := sql.Open("mysql", dsn)
 
 	if err != nil {
 		panic(err)

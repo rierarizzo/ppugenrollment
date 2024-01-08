@@ -4,17 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/jmoiron/sqlx"
 	"log/slog"
 	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
 
 type DefaultApprovalRepository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewApprovalRepository(db *sqlx.DB) *DefaultApprovalRepository {
+func NewApprovalRepository(db *sql.DB) *DefaultApprovalRepository {
 	return &DefaultApprovalRepository{db}
 }
 

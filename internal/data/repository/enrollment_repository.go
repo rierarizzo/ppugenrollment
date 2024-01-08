@@ -1,30 +1,32 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
-	"ppugenrollment/internal/data/mappers"
+	"context"
+	"database/sql"
+	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
 
 type DefaultEnrollmentRepository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewEnrollmentRepository(db *sqlx.DB) *DefaultEnrollmentRepository {
+func NewEnrollmentRepository(db *sql.DB) *DefaultEnrollmentRepository {
 	return &DefaultEnrollmentRepository{db}
 }
 
 func (d *DefaultEnrollmentRepository) InsertEnrollment(application *domain.EnrollmentApplication) (int,
 	*domain.AppError) {
-	applicationModel := mappers.FromEnrollmentApplicationToModel(application)
+	queries := sqlcgen.New(d.db)
 
-	insertApplicationInSchema := `
-		INSERT INTO enrollment_application (student, project, schedule) VALUES (?,?,?)
-	`
-	result, err := d.db.Exec(insertApplicationInSchema, applicationModel.Student, applicationModel.Project,
-		applicationModel.Schedule)
+	result, err := queries.CreateEnrollmentApplication(context.Background(), sqlcgen.CreateEnrollmentApplicationParams{
+		Student:  int32(application.Student.ID),
+		Project:  int32(application.Project.ID),
+		Schedule: int32(application.Schedule),
+	})
+
 	if err != nil {
-		return 0, domain.NewAppError(err, domain.RepositoryError)
+		return 0, domain.NewAppError(err.Error(), domain.RepositoryError)
 	}
 
 	lastInsertedID, _ := result.LastInsertId()

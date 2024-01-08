@@ -2,16 +2,16 @@ package repository
 
 import (
 	"context"
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
 
 type DefaultProjectRepository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewProjectRepository(db *sqlx.DB) *DefaultProjectRepository {
+func NewProjectRepository(db *sql.DB) *DefaultProjectRepository {
 	return &DefaultProjectRepository{db}
 }
 

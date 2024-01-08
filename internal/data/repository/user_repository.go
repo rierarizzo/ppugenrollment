@@ -4,17 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/jmoiron/sqlx"
 	"log/slog"
 	"ppugenrollment/internal/data/sqlcgen"
 	"ppugenrollment/pkg/domain"
 )
 
 type DefaultUserRepository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewUserRepository(db *sqlx.DB) *DefaultUserRepository {
+func NewUserRepository(db *sql.DB) *DefaultUserRepository {
 	return &DefaultUserRepository{db}
 }
 
