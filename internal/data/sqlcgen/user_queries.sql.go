@@ -42,9 +42,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Res
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, id_card_number, name, surname, email, password, role, date_of_birth, is_a_graduate, level
-FROM user
-WHERE email = ?
+SELECT id, id_card_number, name, surname, email, password, role, date_of_birth, is_a_graduate, level FROM user WHERE email = ?
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {

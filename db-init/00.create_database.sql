@@ -1,3 +1,3 @@
-drop database if exists ppugenrollment;
+DROP DATABASE IF EXISTS ppugenrollment;
 
-create database ppugenrollment;
+CREATE DATABASE ppugenrollment;

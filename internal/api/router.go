@@ -7,10 +7,7 @@ import (
 	"ppugenrollment/internal/ports"
 )
 
-func Router(
-	userAuth ports.UserAuthenticator,
-	projectMngr ports.ProjectManager,
-	enroller ports.ProjectEnroller,
+func Router(userAuth ports.UserAuthenticator, projectMngr ports.ProjectManager, enroller ports.ProjectEnroller,
 	approver ports.EnrollmentApprover) *echo.Echo {
 	e := echo.New()
 
@@ -37,7 +34,10 @@ func loadProjectManagerRouter(e *echo.Echo, projectManager ports.ProjectManager)
 
 	projectMngrGroup := e.Group("/project", middlewares.VerifyJWTAndRoles)
 	projectMngrGroup.GET("/getAllProjects", projectMngrController.GetAllProjects)
+	projectMngrGroup.GET("/getProjectById/:project_id", projectMngrController.GetProjectByID)
 	projectMngrGroup.POST("/insertNewProject", projectMngrController.AddNewProject)
+	projectMngrGroup.PUT("/updateProject/:project_id", projectMngrController.UpdateProject)
+	projectMngrGroup.DELETE("/deleteProject/:project_id", projectMngrController.DeleteProject)
 }
 
 func loadProjectEnrollerRouter(e *echo.Echo, projectEnroller ports.ProjectEnroller) {

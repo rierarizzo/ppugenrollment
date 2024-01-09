@@ -16,7 +16,7 @@ func FromGeneratedToResponse(generated *domain.EnrollmentGenerated) types.Enroll
 				Name: generated.Project.Company.Name,
 				RUC:  generated.Project.Company.RUC,
 			},
-			Schedule:    generated.Schedule,
+			Schedules:   generated.Project.Schedules,
 			Description: generated.Project.Description,
 			Starts:      generated.Project.Starts,
 			Ends:        generated.Project.Ends,

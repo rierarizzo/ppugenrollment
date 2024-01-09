@@ -7,6 +7,7 @@ type Project struct {
 	Company     Company
 	Name        string
 	Description string
+	Schedules   []string
 	Starts      time.Time
 	Ends        time.Time
 }

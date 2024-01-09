@@ -1,11 +1,5 @@
-use ppugenrollment;
+USE ppugenrollment;
 
-insert into user_role
-values ('S', 'Estudiante'),
-       ('A', 'Aprobador'),
-       ('M', 'Administrador');
+INSERT INTO user_role VALUES ('S', 'Estudiante'), ('A', 'Aprobador'), ('M', 'Administrador');
 
-insert into schedule
-values ('M', 'Matutino'),
-       ('E', 'Vespertino'),
-       ('N', 'Nocturno');
+INSERT INTO schedule VALUES ('M', 'Matutino'), ('E', 'Vespertino'), ('N', 'Nocturno');

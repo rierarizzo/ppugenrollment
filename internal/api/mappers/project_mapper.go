@@ -10,6 +10,7 @@ func FromRequestToProject(request *types.ProjectRequest) domain.Project {
 		Company:     domain.Company{ID: request.Company},
 		Name:        request.Name,
 		Description: request.Description,
+		Schedules:   request.Schedules,
 		Starts:      request.Starts,
 		Ends:        request.Ends,
 	}
@@ -17,10 +18,15 @@ func FromRequestToProject(request *types.ProjectRequest) domain.Project {
 
 func FromProjectToResponse(project *domain.Project) types.ProjectResponse {
 	return types.ProjectResponse{
-		ID:          project.ID,
-		Company:     types.CompanyResponse{ID: project.Company.ID},
+		ID: project.ID,
+		Company: types.CompanyResponse{
+			ID:   project.Company.ID,
+			Name: project.Company.Name,
+			RUC:  project.Company.RUC,
+		},
 		Name:        project.Name,
 		Description: project.Description,
+		Schedules:   project.Schedules,
 		Starts:      project.Starts,
 		Ends:        project.Ends,
 	}

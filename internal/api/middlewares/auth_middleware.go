@@ -43,9 +43,10 @@ func VerifyJWTAndRoles(next echo.HandlerFunc) echo.HandlerFunc {
 			return next(c)
 		}
 
-		slog.Error(fmt.Sprintf("Role %s not authorized", claims.Role))
+		appErrMsg := fmt.Sprintf("Role %s not authorized", claims.Role)
+		slog.Error(appErrMsg)
 
-		return utils.SendError(http.StatusUnauthorized, domain.NewAppErrorWithType(domain.NotAuthorizedError))
+		return utils.SendError(http.StatusUnauthorized, domain.NewAppError(appErrMsg, domain.NotAuthorizedError))
 	}
 }
 

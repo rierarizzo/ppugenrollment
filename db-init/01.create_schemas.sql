@@ -1,86 +1,70 @@
-use ppugenrollment;
+USE ppugenrollment;
 
-create table user_role
-(
-    code        char        not null,
-    description varchar(15) not null,
-    primary key (code)
-);
+CREATE TABLE user_role (
+	code        CHAR        NOT NULL,
+	description VARCHAR(15) NOT NULL,
+	PRIMARY KEY (code));
 
-create table user
-(
-    id             int          not null auto_increment,
-    id_card_number varchar(10)  not null unique,
-    name           varchar(50)  not null,
-    surname        varchar(50)  not null,
-    email          varchar(50)  not null,
-    password       varchar(300) not null,
-    role           char         not null,
-    date_of_birth date,
-    is_a_graduate boolean default false,
-    level         int default 0,
-    primary key (id),
-    foreign key (role) references user_role (code)
-);
+CREATE TABLE user (
+	id             INT          NOT NULL AUTO_INCREMENT,
+	id_card_number VARCHAR(10)  NOT NULL UNIQUE,
+	name           VARCHAR(50)  NOT NULL,
+	surname        VARCHAR(50)  NOT NULL,
+	email          VARCHAR(50)  NOT NULL,
+	password       VARCHAR(300) NOT NULL,
+	role           CHAR         NOT NULL,
+	date_of_birth  DATE,
+	is_a_graduate  BOOLEAN DEFAULT FALSE,
+	level          INT     DEFAULT 0,
+	PRIMARY KEY (id),
+	FOREIGN KEY (role) REFERENCES user_role (code));
 
-create table schedule
-(
-    code       char        not null,
-    desciption varchar(15) not null,
-    primary key (code)
-);
+CREATE TABLE schedule (
+	code       CHAR        NOT NULL,
+	desciption VARCHAR(15) NOT NULL,
+	PRIMARY KEY (code));
 
-create table company
-(
-    id        int         not null auto_increment,
-    name      varchar(50) not null,
-    ruc       varchar(13) not null,
-    image_url text,
-    primary key (id)
-);
+CREATE TABLE company (
+	id        INT         NOT NULL AUTO_INCREMENT,
+	name      VARCHAR(50) NOT NULL,
+	ruc       VARCHAR(13) NOT NULL,
+	image_url TEXT,
+	PRIMARY KEY (id));
 
-create table project
-(
-    id          int         not null auto_increment,
-    company     int         not null,
-    name        varchar(50) not null,
-    description text        not null,
-    starts      datetime    not null,
-    ends        datetime    not null,
-    primary key (id),
-    foreign key (company) references company (id)
-);
+CREATE TABLE project (
+	id          INT         NOT NULL AUTO_INCREMENT,
+	company     INT         NOT NULL,
+	name        VARCHAR(50) NOT NULL,
+	description TEXT        NOT NULL,
+	starts      DATETIME    NOT NULL,
+	ends        DATETIME    NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (company) REFERENCES company (id));
 
-create table project_schedule
-(
-    id       int  not null auto_increment,
-    project  int  not null,
-    schedule char not null,
-    primary key (id),
-    foreign key (project) references project (id),
-    foreign key (schedule) references schedule (code)
-);
+CREATE TABLE project_schedule (
+	id       INT  NOT NULL AUTO_INCREMENT,
+	project  INT  NOT NULL,
+	schedule CHAR NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (project) REFERENCES project (id),
+	FOREIGN KEY (schedule) REFERENCES schedule (code));
 
-create table enrollment_application
-(
-    id         int  not null auto_increment,
-    student    int  not null,
-    project    int  not null,
-    schedule   int  not null,
-    applied_on datetime      default now(),
-    status     char not null default 'P', # P: Pendiente, A: Approved
-    primary key (id),
-    foreign key (student) references user (id),
-    foreign key (project) references project (id),
-    foreign key (schedule) references project_schedule (id)
-);
+CREATE TABLE enrollment_application (
+	id         INT  NOT NULL AUTO_INCREMENT,
+	student    INT  NOT NULL,
+	project    INT  NOT NULL,
+	schedule   INT  NOT NULL,
+	applied_on DATETIME      DEFAULT NOW(),
+	status     CHAR NOT NULL DEFAULT 'P', # P: Pendiente, A: Approved
+	PRIMARY KEY (id),
+	FOREIGN KEY (student) REFERENCES user (id),
+	FOREIGN KEY (project) REFERENCES project (id),
+	FOREIGN KEY (schedule) REFERENCES project_schedule (id));
 
-create table enrollment_generated
-(
-    id                     int      not null auto_increment,
-    enrollment_application int      not null,
-    approved_by            int      not null,
-    generated_at           datetime not null default now(),
-    primary key (id),
-    foreign key (approved_by) references user (id)
-);
+CREATE TABLE enrollment_generated (
+	id                     INT      NOT NULL AUTO_INCREMENT,
+	enrollment_application INT      NOT NULL,
+	approved_by            INT      NOT NULL,
+	generated_at           DATETIME NOT NULL DEFAULT NOW(),
+	PRIMARY KEY (id),
+	FOREIGN KEY (approved_by) REFERENCES user (id));

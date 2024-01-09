@@ -25,6 +25,17 @@ func (d *DefaultProjectManager) GetAllProjects() ([]domain.Project, *domain.AppE
 	return projects, nil
 }
 
+func (d *DefaultProjectManager) GetProjectByID(projectID int) (*domain.Project, *domain.AppError) {
+	project, appErr := d.projectRepo.SelectProjectByID(projectID)
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return project, nil
+}
+
 func (d *DefaultProjectManager) AddNewProject(project *domain.Project) (*domain.Project, *domain.AppError) {
 	projectWithID, appErr := d.projectRepo.InsertProject(project)
 
@@ -34,4 +45,26 @@ func (d *DefaultProjectManager) AddNewProject(project *domain.Project) (*domain.
 	}
 
 	return projectWithID, nil
+}
+
+func (d *DefaultProjectManager) UpdateProject(projectID int, project *domain.Project) *domain.AppError {
+	appErr := d.projectRepo.UpdateProject(projectID, project)
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return nil
+}
+
+func (d *DefaultProjectManager) DeleteProject(projectID int) *domain.AppError {
+	appErr := d.projectRepo.DeleteProject(projectID)
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return nil
 }

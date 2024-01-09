@@ -30,7 +30,7 @@ type ProjectResponse struct {
 	Company     CompanyResponse `json:"company"`
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
-	Schedule    string          `json:"schedule"`
+	Schedules   []string        `json:"schedule"`
 	Starts      time.Time       `json:"starts"`
 	Ends        time.Time       `json:"ends"`
 }

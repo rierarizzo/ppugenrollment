@@ -11,8 +11,7 @@ import (
 )
 
 const createEnrollmentApplication = `-- name: CreateEnrollmentApplication :execresult
-INSERT INTO enrollment_application (student, project, schedule)
-VALUES (?, ?, ?)
+INSERT INTO enrollment_application (student, project, schedule) VALUES (?, ?, ?)
 `
 
 type CreateEnrollmentApplicationParams struct {
