@@ -9,7 +9,7 @@ services:
     environment:
       DB_USER: 'user'
       DB_PASSWORD: 'password'
-      DB_HOST: 'mysql-instance'
+      DB_HOST: 'mysql'
       DB_NAME: 'ppugenrollment'
     ports:
       - '8080:80'
@@ -17,9 +17,9 @@ services:
       mode: replicated
       replicas: 1
     depends_on:
-      - mysql-instance
+      - mysql
 
-  mysql-instance:
+  mysql:
     image: mysql:latest
     restart: unless-stopped
     command: --explicit_defaults_for_timestamp=true
