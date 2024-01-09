@@ -40,18 +40,15 @@ func (d *DefaultProjectRepository) SelectAllProjects() ([]domain.Project, *domai
 			return nil, appErr
 		}
 
-		company, err := queries.GetCompany(context.Background(), model.ID)
+		company, appErr := d.SelectCompanyByID(int(model.Company))
 
-		if err != nil {
-			return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+		if appErr != nil {
+			return nil, appErr
 		}
 
 		projects = append(projects, domain.Project{
-			ID: int(model.ID),
-			Company: domain.Company{ID: int(model.Company),
-				Name:     company.Name,
-				RUC:      company.Ruc,
-				ImageURL: company.ImageUrl.String},
+			ID:          int(model.ID),
+			Company:     *company,
 			Name:        model.Name,
 			Description: model.Description,
 			Schedules:   schedules,
@@ -89,18 +86,13 @@ func (d *DefaultProjectRepository) SelectProjectByID(projectID int) (*domain.Pro
 
 	project.Schedules = schedules
 
-	company, err := queries.GetCompany(context.Background(), int32(projectID))
+	company, appErr := d.SelectCompanyByID(int(projectModel.Company))
 
-	if err != nil {
-		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+	if appErr != nil {
+		return nil, appErr
 	}
 
-	project.Company = domain.Company{
-		ID:       int(company.ID),
-		Name:     company.Name,
-		RUC:      company.Ruc,
-		ImageURL: company.ImageUrl.String,
-	}
+	project.Company = *company
 
 	return &project, nil
 }
@@ -121,6 +113,25 @@ func (d *DefaultProjectRepository) SelectProjectSchedulesByProjectID(projectID i
 	}
 
 	return schedules, nil
+}
+
+func (d *DefaultProjectRepository) SelectCompanyByID(companyID int) (*domain.Company, *domain.AppError) {
+	queries := sqlcgen.New(d.db)
+
+	companyModel, err := queries.GetCompany(context.Background(), int32(companyID))
+
+	if err != nil {
+		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	company := domain.Company{
+		ID:       int(companyModel.ID),
+		Name:     companyModel.Name,
+		RUC:      companyModel.Ruc,
+		ImageURL: companyModel.ImageUrl.String,
+	}
+
+	return &company, nil
 }
 
 func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*domain.Project, *domain.AppError) {
@@ -171,18 +182,13 @@ func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*doma
 		slog.Debug(fmt.Sprintf("Schedule '%s' created for project with ID %v", schedule, lastInsertedID))
 	}
 
-	company, err := qtx.GetCompany(ctx, int32(lastInsertedID))
+	company, appErr := d.SelectCompanyByID(project.Company.ID)
 
-	if err != nil {
-		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+	if appErr != nil {
+		return nil, appErr
 	}
 
-	project.Company = domain.Company{
-		ID:       int(company.ID),
-		Name:     company.Name,
-		RUC:      company.Ruc,
-		ImageURL: company.ImageUrl.String,
-	}
+	project.Company = *company
 
 	err = tx.Commit()
 
