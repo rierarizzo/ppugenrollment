@@ -21,7 +21,7 @@ func (d *DefaultEnrollmentRepository) InsertEnrollment(application *domain.Enrol
 
 	scheduleResult, err := queries.CreateScheduleForProject(context.Background(), sqlcgen.CreateScheduleForProjectParams{
 		Project:  int32(application.Project.ID),
-		Schedule: "M",
+		Schedule: application.ScheduleCode,
 	})
 
 	if err != nil {

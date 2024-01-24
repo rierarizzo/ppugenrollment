@@ -5,8 +5,9 @@ import (
 )
 
 type EnrollmentApplicationRequest struct {
-	Project  int `json:"project"`
-	Schedule int `json:"schedule"`
+	Project      int    `json:"project"`
+	Schedule     int    `json:"schedule"`
+	ScheduleCode string `json:"schedule_code"`
 }
 
 func (r *EnrollmentApplicationRequest) Validate() *domain.AppError {
@@ -27,5 +28,6 @@ type EnrollmentApplicationResponse struct {
 	ProjectName    string `json:"project_name,omitempty"`
 	CompanyName    string `json:"company_name,omitempty"`
 	Schedule       int    `json:"schedule,omitempty"`
+	ScheduleCode   string `json:"schedule_code,omitempty"`
 	Status         string `json:"status,omitempty"`
 }

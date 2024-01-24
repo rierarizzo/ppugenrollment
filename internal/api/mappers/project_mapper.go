@@ -53,3 +53,15 @@ func FromProjectsToResponse(projects []domain.Project) []types.ProjectResponse {
 
 	return response
 }
+
+func FromSchedulesToResponse(schedules []domain.Schedule) []types.ScheduleResponse {
+	var response []types.ScheduleResponse
+	for _, v := range schedules {
+		response = append(response, types.ScheduleResponse{
+			ID:   v.ID,
+			Code: v.Code,
+		})
+	}
+
+	return response
+}

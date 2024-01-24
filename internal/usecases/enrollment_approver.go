@@ -14,9 +14,9 @@ func NewEnrollmentApprover(approvalRepo ports.ApprovalRepository) *DefaultEnroll
 	return &DefaultEnrollmentApprover{approvalRepo}
 }
 
-func (d *DefaultEnrollmentApprover) ApproveEnrollmentApplication(applicationID, approvedBy int) (*domain.EnrollmentGenerated,
+func (d *DefaultEnrollmentApprover) ApproveEnrollmentApplication(applicationID, approvedBy int, observation string) (*domain.EnrollmentGenerated,
 	*domain.AppError) {
-	generated, appErr := d.approvalRepo.InsertEnrollmentApproval(applicationID, approvedBy)
+	generated, appErr := d.approvalRepo.InsertEnrollmentApproval(applicationID, approvedBy, observation)
 
 	if appErr != nil {
 		slog.Error(appErr.Error())

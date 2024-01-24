@@ -6,3 +6,9 @@ type Company struct {
 	RUC      string
 	ImageURL string
 }
+
+type Schedule struct {
+	ID          int
+	Code        string
+	Description string
+}

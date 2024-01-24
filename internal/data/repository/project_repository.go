@@ -301,3 +301,24 @@ func (d *DefaultProjectRepository) SelectCompanies() ([]domain.Company, *domain.
 
 	return companies, nil
 }
+
+func (d *DefaultProjectRepository) SelectSchedulesByProjectID(projectID int) ([]domain.Schedule, *domain.AppError) {
+	queries := sqlcgen.New(d.db)
+
+	schedulesModel, err := queries.GetProjectSchedulesByProjectID(context.Background(), int32(projectID))
+
+	if err != nil {
+		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	var schedules []domain.Schedule
+
+	for _, model := range schedulesModel {
+		schedules = append(schedules, domain.Schedule{
+			ID:   int(model.ID),
+			Code: model.Schedule + "-" + string(model.ID),
+		})
+	}
+
+	return schedules, nil
+}

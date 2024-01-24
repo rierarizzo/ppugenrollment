@@ -29,6 +29,7 @@ type EnrollmentGenerated struct {
 	ID                    int32
 	EnrollmentApplication int32
 	ApprovedBy            int32
+	Observation           sql.NullString
 	GeneratedAt           time.Time
 }
 

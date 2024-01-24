@@ -79,3 +79,14 @@ func (d *DefaultProjectManager) GetCompanies() ([]domain.Company, *domain.AppErr
 
 	return companies, nil
 }
+
+func (d *DefaultProjectManager) GetSchedulesByProjectID(projectID int) ([]domain.Schedule, *domain.AppError) {
+	schedules, appErr := d.projectRepo.SelectSchedulesByProjectID(projectID)
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return schedules, nil
+}

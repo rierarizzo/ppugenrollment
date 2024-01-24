@@ -9,6 +9,7 @@ type ProjectManager interface {
 	UpdateProject(projectID int, project *domain.Project) *domain.AppError
 	DeleteProject(projectID int) *domain.AppError
 	GetCompanies() ([]domain.Company, *domain.AppError)
+	GetSchedulesByProjectID(projectID int) ([]domain.Schedule, *domain.AppError)
 }
 
 type ProjectRepository interface {
@@ -18,4 +19,5 @@ type ProjectRepository interface {
 	UpdateProject(projectID int, project *domain.Project) *domain.AppError
 	DeleteProject(projectID int) *domain.AppError
 	SelectCompanies() ([]domain.Company, *domain.AppError)
+	SelectSchedulesByProjectID(projectID int) ([]domain.Schedule, *domain.AppError)
 }

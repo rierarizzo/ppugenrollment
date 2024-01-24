@@ -40,6 +40,7 @@ func loadProjectManagerRouter(e *echo.Echo, projectManager ports.ProjectManager)
 	projectMngrGroup.PUT("/updateProject/:project_id", projectMngrController.UpdateProject)
 	projectMngrGroup.DELETE("/deleteProject/:project_id", projectMngrController.DeleteProject)
 	projectMngrGroup.GET("/getCompanies", projectMngrController.GetCompanies)
+	projectMngrGroup.GET("/getSchedulesByProjectId/:project_id", projectMngrController.GetSchedulesByProjectID)
 }
 
 func loadProjectEnrollerRouter(e *echo.Echo, projectEnroller ports.ProjectEnroller) {
@@ -54,7 +55,7 @@ func loadApprovalRouter(e *echo.Echo, approver ports.EnrollmentApprover) {
 	approvalController := controllers.NewApprovalController(approver)
 
 	approvalGroup := e.Group("/approval", middlewares.VerifyJWTAndRoles)
-	approvalGroup.POST("/approveEnrollmentApplication/:application_id", approvalController.ApproveEnrollmentApplication)
+	approvalGroup.POST("/approveEnrollmentApplication/:application_id/:observation", approvalController.ApproveEnrollmentApplication)
 }
 
 func loadMiddlewares(e *echo.Echo) {

@@ -130,3 +130,21 @@ func (pc *ProjectController) GetCompanies(c echo.Context) error {
 
 	return utils.SendOK(c, http.StatusOK, "", response)
 }
+
+func (pc *ProjectController) GetSchedulesByProjectID(c echo.Context) error {
+	projectID, err := strconv.Atoi(c.Param("project_id"))
+
+	if err != nil {
+		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
+	}
+
+	schedules, appErr := pc.manager.GetSchedulesByProjectID(projectID)
+
+	if appErr != nil {
+		return utils.SendError(http.StatusInternalServerError, appErr)
+	}
+
+	response := mappers.FromSchedulesToResponse(schedules)
+
+	return utils.SendOK(c, http.StatusOK, "", response)
+}

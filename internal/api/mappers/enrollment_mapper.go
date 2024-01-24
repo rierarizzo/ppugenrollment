@@ -14,7 +14,7 @@ func FromApplicationToResponse(application *domain.EnrollmentApplication) types.
 		Project:        application.Project.ID,
 		ProjectName:    application.Project.Name,
 		CompanyName:    application.Project.Company.Name,
-		Schedule:       application.Schedule,
+		ScheduleCode:   application.ScheduleCode,
 		Status:         application.Status,
 	}
 }
@@ -33,5 +33,6 @@ func FromRequestToApplication(request *types.EnrollmentApplicationRequest) domai
 	return domain.EnrollmentApplication{
 		Project:  domain.Project{ID: request.Project},
 		Schedule: request.Schedule,
+		ScheduleCode: request.ScheduleCode,
 	}
 }

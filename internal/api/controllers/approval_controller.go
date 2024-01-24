@@ -25,9 +25,10 @@ func (ac *ApprovalController) ApproveEnrollmentApplication(c echo.Context) error
 		return utils.SendError(http.StatusBadRequest, domain.NewAppErrorWithType(domain.BadRequestError))
 	}
 
+	observation := c.Param("observation")
 	approvedBy := c.Get("UserID").(int)
 
-	generated, appErr := ac.approver.ApproveEnrollmentApplication(applicationID, approvedBy)
+	generated, appErr := ac.approver.ApproveEnrollmentApplication(applicationID, approvedBy, observation)
 
 	if appErr != nil {
 		return utils.SendError(http.StatusInternalServerError, appErr)

@@ -2,7 +2,7 @@
 UPDATE enrollment_application SET status = 'A' WHERE id = ?;
 
 -- name: CreateEnrollmentGenerated :execresult
-INSERT INTO enrollment_generated (enrollment_application, approved_by) VALUES (?, ?);
+INSERT INTO enrollment_generated (enrollment_application, approved_by, observation) VALUES (?, ?, ?);
 
 -- name: GetEnrollmentGenerated :one
 SELECT eg.id                     AS id,

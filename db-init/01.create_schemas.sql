@@ -65,6 +65,7 @@ CREATE TABLE enrollment_generated (
 	id                     INT      NOT NULL AUTO_INCREMENT,
 	enrollment_application INT      NOT NULL,
 	approved_by            INT      NOT NULL,
+	observation 		   TEXT,
 	generated_at           DATETIME NOT NULL DEFAULT NOW(),
 	PRIMARY KEY (id),
 	FOREIGN KEY (approved_by) REFERENCES user (id));

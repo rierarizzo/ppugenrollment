@@ -34,3 +34,9 @@ type ProjectResponse struct {
 	Starts      time.Time       `json:"starts"`
 	Ends        time.Time       `json:"ends"`
 }
+
+type ScheduleResponse struct {
+	ID        int    `json:"id"`
+	ProjectID int    `json:"project_id,omitempty"`
+	Code      string `json:"code"`
+}

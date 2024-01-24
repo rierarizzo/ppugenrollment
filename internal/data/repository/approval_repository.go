@@ -17,7 +17,7 @@ func NewApprovalRepository(db *sql.DB) *DefaultApprovalRepository {
 	return &DefaultApprovalRepository{db}
 }
 
-func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, approvedBy int) (*domain.EnrollmentGenerated,
+func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, approvedBy int, observation string) (*domain.EnrollmentGenerated,
 	*domain.AppError) {
 	ctx := context.Background()
 
@@ -47,6 +47,7 @@ func (d *DefaultApprovalRepository) InsertEnrollmentApproval(applicationID, appr
 	result, err := qtx.CreateEnrollmentGenerated(ctx, sqlcgen.CreateEnrollmentGeneratedParams{
 		EnrollmentApplication: int32(applicationID),
 		ApprovedBy:            int32(approvedBy),
+		Observation:           sql.NullString{String: observation, Valid: true},
 	})
 
 	if err != nil {

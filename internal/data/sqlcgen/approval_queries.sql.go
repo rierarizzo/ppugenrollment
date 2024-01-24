@@ -12,16 +12,17 @@ import (
 )
 
 const createEnrollmentGenerated = `-- name: CreateEnrollmentGenerated :execresult
-INSERT INTO enrollment_generated (enrollment_application, approved_by) VALUES (?, ?)
+INSERT INTO enrollment_generated (enrollment_application, approved_by, observation) VALUES (?, ?, ?)
 `
 
 type CreateEnrollmentGeneratedParams struct {
 	EnrollmentApplication int32
 	ApprovedBy            int32
+	Observation           sql.NullString
 }
 
 func (q *Queries) CreateEnrollmentGenerated(ctx context.Context, arg CreateEnrollmentGeneratedParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createEnrollmentGenerated, arg.EnrollmentApplication, arg.ApprovedBy)
+	return q.db.ExecContext(ctx, createEnrollmentGenerated, arg.EnrollmentApplication, arg.ApprovedBy, arg.Observation)
 }
 
 const getEnrollmentApplications = `-- name: GetEnrollmentApplications :many
