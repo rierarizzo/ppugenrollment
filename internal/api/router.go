@@ -1,10 +1,11 @@
 package api
 
 import (
-	"github.com/labstack/echo/v4"
 	"ppugenrollment/internal/api/controllers"
 	"ppugenrollment/internal/api/middlewares"
 	"ppugenrollment/internal/ports"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Router(userAuth ports.UserAuthenticator, projectMngr ports.ProjectManager, enroller ports.ProjectEnroller,
@@ -38,6 +39,7 @@ func loadProjectManagerRouter(e *echo.Echo, projectManager ports.ProjectManager)
 	projectMngrGroup.POST("/insertNewProject", projectMngrController.AddNewProject)
 	projectMngrGroup.PUT("/updateProject/:project_id", projectMngrController.UpdateProject)
 	projectMngrGroup.DELETE("/deleteProject/:project_id", projectMngrController.DeleteProject)
+	projectMngrGroup.GET("/getCompanies", projectMngrController.GetCompanies)
 }
 
 func loadProjectEnrollerRouter(e *echo.Echo, projectEnroller ports.ProjectEnroller) {
@@ -45,6 +47,7 @@ func loadProjectEnrollerRouter(e *echo.Echo, projectEnroller ports.ProjectEnroll
 
 	enrollmentGroup := e.Group("/enrollment", middlewares.VerifyJWTAndRoles)
 	enrollmentGroup.POST("/enrollToProject", enrollmentController.EnrollToProject)
+	enrollmentGroup.GET("/getEnrollmentApplications", enrollmentController.GetEnrollmentApplications)
 }
 
 func loadApprovalRouter(e *echo.Echo, approver ports.EnrollmentApprover) {

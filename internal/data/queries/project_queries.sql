@@ -19,5 +19,11 @@ UPDATE project SET company = ?, name = ?, description = ?, starts = ?, ends = ? 
 -- name: DeleteProject :exec
 DELETE FROM project WHERE id = ?;
 
+-- name: DeleteProjectSchedules :exec
+DELETE FROM project_schedule WHERE project = ?;
+
 -- name: GetCompany :one
 SELECT * FROM company WHERE id = ?;
+
+-- name: GetCompanies :many
+SELECT * FROM company ORDER BY name;

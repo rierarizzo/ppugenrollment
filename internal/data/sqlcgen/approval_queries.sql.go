@@ -24,6 +24,83 @@ func (q *Queries) CreateEnrollmentGenerated(ctx context.Context, arg CreateEnrol
 	return q.db.ExecContext(ctx, createEnrollmentGenerated, arg.EnrollmentApplication, arg.ApprovedBy)
 }
 
+const getEnrollmentApplications = `-- name: GetEnrollmentApplications :many
+SELECT ea.id 					 AS application_id,
+	   ea.status				 AS application_status,
+	   sus.id			 	 	 AS student_id,
+	   sus.name			 		 AS student_name,
+	   sus.surname				 AS student_surname,
+	   p.id                      AS project_id,
+	   p.name 				  	 AS project_name,	
+	   p.description             AS project_description,
+	   ps.schedule               AS project_schedule,
+	   p.starts                  AS project_starts,
+	   p.ends                    AS project_ends,
+	   c.id                      AS company_id,
+	   c.name                    AS company_name,
+	   c.ruc                     AS company_ruc
+FROM enrollment_application ea
+		 INNER JOIN project p ON ea.project = p.id
+		 INNER JOIN project_schedule ps ON ea.schedule = ps.id
+		 INNER JOIN company c ON p.company = c.id
+		 INNER JOIN user sus ON ea.student = sus.id
+`
+
+type GetEnrollmentApplicationsRow struct {
+	ApplicationID      int32
+	ApplicationStatus  string
+	StudentID          int32
+	StudentName        string
+	StudentSurname     string
+	ProjectID          int32
+	ProjectName        string
+	ProjectDescription string
+	ProjectSchedule    string
+	ProjectStarts      time.Time
+	ProjectEnds        time.Time
+	CompanyID          int32
+	CompanyName        string
+	CompanyRuc         string
+}
+
+func (q *Queries) GetEnrollmentApplications(ctx context.Context) ([]GetEnrollmentApplicationsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getEnrollmentApplications)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetEnrollmentApplicationsRow
+	for rows.Next() {
+		var i GetEnrollmentApplicationsRow
+		if err := rows.Scan(
+			&i.ApplicationID,
+			&i.ApplicationStatus,
+			&i.StudentID,
+			&i.StudentName,
+			&i.StudentSurname,
+			&i.ProjectID,
+			&i.ProjectName,
+			&i.ProjectDescription,
+			&i.ProjectSchedule,
+			&i.ProjectStarts,
+			&i.ProjectEnds,
+			&i.CompanyID,
+			&i.CompanyName,
+			&i.CompanyRuc,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getEnrollmentGenerated = `-- name: GetEnrollmentGenerated :one
 SELECT eg.id                     AS id,
 	   eg.enrollment_application AS application_id,

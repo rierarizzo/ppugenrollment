@@ -8,6 +8,7 @@ type ProjectManager interface {
 	AddNewProject(project *domain.Project) (*domain.Project, *domain.AppError)
 	UpdateProject(projectID int, project *domain.Project) *domain.AppError
 	DeleteProject(projectID int) *domain.AppError
+	GetCompanies() ([]domain.Company, *domain.AppError)
 }
 
 type ProjectRepository interface {
@@ -16,4 +17,5 @@ type ProjectRepository interface {
 	InsertProject(project *domain.Project) (*domain.Project, *domain.AppError)
 	UpdateProject(projectID int, project *domain.Project) *domain.AppError
 	DeleteProject(projectID int) *domain.AppError
+	SelectCompanies() ([]domain.Company, *domain.AppError)
 }

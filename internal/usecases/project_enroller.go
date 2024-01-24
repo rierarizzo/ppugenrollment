@@ -34,3 +34,14 @@ func (p *DefaultProjectEnroller) EnrollToProject(application *domain.EnrollmentA
 
 	return &completeApplication, nil
 }
+
+func (d *DefaultProjectEnroller) GetEnrollmentApplications() ([]domain.EnrollmentApplication, *domain.AppError) {
+	applications, appErr := d.enrollmentRepo.SelectEnrollmentApplications()
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return applications, nil
+}

@@ -201,9 +201,45 @@ func (d *DefaultProjectRepository) InsertProject(project *domain.Project) (*doma
 }
 
 func (d *DefaultProjectRepository) UpdateProject(projectID int, project *domain.Project) *domain.AppError {
-	queries := sqlcgen.New(d.db)
+	ctx := context.Background()
 
-	err := queries.UpdateProject(context.Background(), sqlcgen.UpdateProjectParams{
+	tx, err := d.db.Begin()
+
+	if err != nil {
+		return domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	defer func(tx *sql.Tx) {
+		err = tx.Rollback()
+
+		if !errors.Is(err, sql.ErrTxDone) {
+			slog.Error("an error occurred while rolling back the transaction: " + err.Error())
+		}
+	}(tx)
+
+	queries := sqlcgen.New(d.db)
+	qtx := queries.WithTx(tx)
+
+	err = qtx.DeleteProjectSchedules(context.Background(), int32(projectID))
+
+	if err != nil {
+		return domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	for _, schedule := range project.Schedules {
+		_, err := qtx.CreateScheduleForProject(ctx, sqlcgen.CreateScheduleForProjectParams{
+			Project:  int32(projectID),
+			Schedule: schedule,
+		})
+
+		if err != nil {
+			return domain.NewAppError(err.Error(), domain.RepositoryError)
+		}
+
+		slog.Debug(fmt.Sprintf("Schedule '%s' created for project with ID %v", schedule, projectID))
+	}
+
+	err = qtx.UpdateProject(context.Background(), sqlcgen.UpdateProjectParams{
 		Company:     int32(project.Company.ID),
 		Name:        project.Name,
 		Description: project.Description,
@@ -216,17 +252,52 @@ func (d *DefaultProjectRepository) UpdateProject(projectID int, project *domain.
 		return domain.NewAppError(err.Error(), domain.RepositoryError)
 	}
 
+	err = tx.Commit()
+
+	if err != nil {
+		slog.Error("an error occurred when committing the transaction: " + err.Error())
+		return domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
 	return nil
 }
 
 func (d *DefaultProjectRepository) DeleteProject(projectID int) *domain.AppError {
 	queries := sqlcgen.New(d.db)
 
-	err := queries.DeleteProject(context.Background(), int32(projectID))
+	err := queries.DeleteProjectSchedules(context.Background(), int32(projectID))
+
+	if err != nil {
+		return domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	err = queries.DeleteProject(context.Background(), int32(projectID))
 
 	if err != nil {
 		return domain.NewAppError(err.Error(), domain.RepositoryError)
 	}
 
 	return nil
+}
+
+func (d *DefaultProjectRepository) SelectCompanies() ([]domain.Company, *domain.AppError) {
+	queries := sqlcgen.New(d.db)
+
+	companiesModel, err := queries.GetCompanies(context.Background())
+
+	if err != nil {
+		return nil, domain.NewAppError(err.Error(), domain.RepositoryError)
+	}
+
+	var companies []domain.Company
+
+	for _, model := range companiesModel {
+		companies = append(companies, domain.Company{
+			ID:   int(model.ID),
+			Name: model.Name,
+			RUC:  model.Ruc,
+		})
+	}
+
+	return companies, nil
 }

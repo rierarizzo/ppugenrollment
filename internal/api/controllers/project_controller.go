@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"log/slog"
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
@@ -11,6 +10,8 @@ import (
 	"ppugenrollment/pkg/domain"
 	"ppugenrollment/pkg/utils"
 	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ProjectController struct {
@@ -116,4 +117,16 @@ func (pc *ProjectController) DeleteProject(c echo.Context) error {
 	}
 
 	return utils.SendOK(c, http.StatusOK, fmt.Sprintf("Project with ID %v deleted", projectID), nil)
+}
+
+func (pc *ProjectController) GetCompanies(c echo.Context) error {
+	companies, appErr := pc.manager.GetCompanies()
+
+	if appErr != nil {
+		return utils.SendError(http.StatusInternalServerError, appErr)
+	}
+
+	response := mappers.FromCompaniesToResponse(companies)
+
+	return utils.SendOK(c, http.StatusOK, "", response)
 }

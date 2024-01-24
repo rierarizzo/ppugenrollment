@@ -32,6 +32,19 @@ func FromProjectToResponse(project *domain.Project) types.ProjectResponse {
 	}
 }
 
+func FromCompaniesToResponse(companies []domain.Company) []types.CompanyResponse {
+	var response []types.CompanyResponse
+	for _, v := range companies {
+		response = append(response, types.CompanyResponse{
+			ID:   v.ID,
+			Name: v.Name,
+			RUC:  v.RUC,
+		})
+	}
+
+	return response
+}
+
 func FromProjectsToResponse(projects []domain.Project) []types.ProjectResponse {
 	var response []types.ProjectResponse
 	for _, v := range projects {

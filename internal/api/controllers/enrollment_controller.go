@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/labstack/echo/v4"
 	"log/slog"
 	"net/http"
 	"ppugenrollment/internal/api/mappers"
@@ -9,6 +8,8 @@ import (
 	"ppugenrollment/internal/ports"
 	"ppugenrollment/pkg/domain"
 	"ppugenrollment/pkg/utils"
+
+	"github.com/labstack/echo/v4"
 )
 
 type EnrollmentController struct {
@@ -44,4 +45,16 @@ func (ec *EnrollmentController) EnrollToProject(c echo.Context) error {
 	response := mappers.FromApplicationToResponse(application)
 
 	return utils.SendOK(c, http.StatusAccepted, "Enrollment applied", response)
+}
+
+func (ec *EnrollmentController) GetEnrollmentApplications(c echo.Context) error {
+	applications, appErr := ec.enroller.GetEnrollmentApplications()
+
+	if appErr != nil {
+		return utils.SendError(http.StatusInternalServerError, appErr)
+	}
+
+	response := mappers.FromApplicationsToResponse(applications)
+
+	return utils.SendOK(c, http.StatusOK, "Enrollments retrieved", response)
 }

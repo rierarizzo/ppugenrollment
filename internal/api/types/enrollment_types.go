@@ -19,8 +19,13 @@ func (r *EnrollmentApplicationRequest) Validate() *domain.AppError {
 }
 
 type EnrollmentApplicationResponse struct {
-	ID       int `json:"id,omitempty"`
-	Student  int `json:"student,omitempty"`
-	Project  int `json:"project,omitempty"`
-	Schedule int `json:"schedule,omitempty"`
+	ID             int    `json:"id,omitempty"`
+	Student        int    `json:"student,omitempty"`
+	StudentName    string `json:"student_name,omitempty"`
+	StudentSurname string `json:"student_surname,omitempty"`
+	Project        int    `json:"project,omitempty"`
+	ProjectName    string `json:"project_name,omitempty"`
+	CompanyName    string `json:"company_name,omitempty"`
+	Schedule       int    `json:"schedule,omitempty"`
+	Status         string `json:"status,omitempty"`
 }

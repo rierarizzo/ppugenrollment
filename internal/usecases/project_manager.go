@@ -68,3 +68,14 @@ func (d *DefaultProjectManager) DeleteProject(projectID int) *domain.AppError {
 
 	return nil
 }
+
+func (d *DefaultProjectManager) GetCompanies() ([]domain.Company, *domain.AppError) {
+	companies, appErr := d.projectRepo.SelectCompanies()
+
+	if appErr != nil {
+		slog.Error(appErr.Error())
+		return nil, domain.NewAppErrorWithType(domain.UnexpectedError)
+	}
+
+	return companies, nil
+}

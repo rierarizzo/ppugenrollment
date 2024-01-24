@@ -55,6 +55,47 @@ func (q *Queries) DeleteProject(ctx context.Context, id int32) error {
 	return err
 }
 
+const deleteProjectSchedules = `-- name: DeleteProjectSchedules :exec
+DELETE FROM project_schedule WHERE project = ?
+`
+
+func (q *Queries) DeleteProjectSchedules(ctx context.Context, project int32) error {
+	_, err := q.db.ExecContext(ctx, deleteProjectSchedules, project)
+	return err
+}
+
+const getCompanies = `-- name: GetCompanies :many
+SELECT id, name, ruc, image_url FROM company ORDER BY name
+`
+
+func (q *Queries) GetCompanies(ctx context.Context) ([]Company, error) {
+	rows, err := q.db.QueryContext(ctx, getCompanies)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Company
+	for rows.Next() {
+		var i Company
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Ruc,
+			&i.ImageUrl,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCompany = `-- name: GetCompany :one
 SELECT id, name, ruc, image_url FROM company WHERE id = ?
 `
